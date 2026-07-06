@@ -22,7 +22,7 @@ Generator-ready mechanical parts, on demand.
 
 Schema and generation contract for practical parametric parts.
 
-- Schema: <https://schemas.invisra.ai/printspec/validator>
+- Schema: <https://schemas.invisra.ai/printspec/>
 - Status: active development
 
 ### Invisra Draft
