@@ -8,34 +8,29 @@ Invisra builds review-first software tools for builders, makers, hardware engine
 
 **Core principle:** predictable workflows, human approval, useful artifacts.
 
-## Projects
-
-### PartPilot
-
-Generator-ready mechanical parts, on demand.
-
-- App: <https://cad.invisra.ai>
-- Status: in development
-- Outputs: OpenSCAD, CadQuery, SVG drawings, printspec JSON
+## Open projects
 
 ### printspec
 
-Schema and generation contract for practical parametric parts.
+A specification JSON schema for practical, parametric 3D/CAD parts.
 
+- Repo: <https://github.com/invisra/printspec>
 - Schema: <https://schemas.invisra.ai/printspec/>
+- Outputs: OpenSCAD, CadQuery, BOM, and drawing metadata
 - Status: active development
 
-### Invisra Draft
+### open-business-plan
 
-Future headless drafting engine for engineering-style SVG sheets.
+An open source JSON schema for defining a business plan.
 
-- Status: internal extraction candidate
+- Repo: <https://github.com/invisra/open-business-plan>
+- Status: active development
 
-### PCBAudit
+## What we're building
 
-Coming soon: AI-assisted PCB review for design files, documentation, and manufacturing readiness.
+Invisra develops AI-assisted engineering tools along with the schemas, workers, and supplier integrations behind them. Most of that work lives in private repositories today — the open building blocks above are the pieces we publish as they stabilize.
 
-### Consulting & custom builds
+## Consulting & custom builds
 
 Pragmatic hardware/software automation for real constraints.
 
@@ -49,7 +44,6 @@ Pragmatic hardware/software automation for real constraints.
 ## Links
 
 - Website: <https://invisra.ai>
-- PartPilot: <https://cad.invisra.ai>
 - Schema tools: <https://schemas.invisra.ai>
 - Contact: <hello@invisra.ai>
 
