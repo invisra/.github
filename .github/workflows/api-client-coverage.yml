@@ -1,0 +1,37 @@
+name: Reusable API client coverage
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version used to run the coverage validator
+        required: false
+        type: string
+        default: "24"
+      validator-path:
+        description: Repository-relative path to the API coverage validator
+        required: false
+        type: string
+        default: scripts/validate-api-coverage.mjs
+      run-drift:
+        description: Also run the validator in upstream drift-detection mode
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ inputs.node-version }}
+      - name: Validate API coverage manifest
+        run: node "${{ inputs.validator-path }}"
+      - name: Check upstream API drift
+        if: ${{ inputs.run-drift }}
+        run: node "${{ inputs.validator-path }}" --drift
