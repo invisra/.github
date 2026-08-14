@@ -1,0 +1,50 @@
+name: Reusable API client observability
+
+on:
+  workflow_call:
+    inputs:
+      contract-ref:
+        description: Immutable invisra/.github ref containing the observability contract and validator
+        required: true
+        type: string
+      node-version:
+        description: Node.js version used for validation
+        required: false
+        type: string
+        default: "24"
+      manifest-path:
+        description: Repository-relative API coverage manifest path
+        required: false
+        type: string
+        default: api-coverage.json
+      generator-path:
+        description: Repository-relative operation capability generator path
+        required: false
+        type: string
+        default: scripts/generate-operation-capabilities.mjs
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout caller
+        uses: actions/checkout@v7
+      - name: Checkout observability contract
+        uses: actions/checkout@v7
+        with:
+          repository: invisra/.github
+          ref: ${{ inputs.contract-ref }}
+          path: .invisra-observability-contract
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ inputs.node-version }}
+      - name: Validate operation semantics
+        run: >-
+          node .invisra-observability-contract/scripts/validate-api-client-observability.mjs
+          "${{ inputs.manifest-path }}"
+          .invisra-observability-contract/contracts/api-client-observability-v1.json
+      - name: Verify generated capability registries
+        run: node "${{ inputs.generator-path }}" --check
