@@ -1,0 +1,63 @@
+{
+  "contractVersion": 1,
+  "name": "Invisra API client observability contract",
+  "operationCapability": {
+    "requiredFields": [
+      "id",
+      "method",
+      "path",
+      "confidence",
+      "classification",
+      "idempotency",
+      "retryPolicy",
+      "confirmationRequired"
+    ],
+    "classification": ["read", "mutation", "consequential", "unknown"],
+    "idempotency": ["idempotent", "non-idempotent", "unknown"],
+    "retryPolicy": ["safe", "none", "explicit"],
+    "invariants": {
+      "safeRetryRequiresIdempotent": true,
+      "consequentialRequiresConfirmation": true,
+      "consequentialDefaultRetryPolicy": "none"
+    }
+  },
+  "requestEvent": {
+    "requiredFields": ["phase", "client", "method", "url", "attempt", "outcome"],
+    "phase": ["request", "response", "retry", "error"],
+    "outcome": ["not-sent", "known", "unknown"],
+    "optionalFields": [
+      "durationMs",
+      "status",
+      "requestId",
+      "retryAfterMs",
+      "operation",
+      "classification",
+      "idempotency",
+      "retryPolicy",
+      "confidence",
+      "confirmationRequired",
+      "experimental",
+      "requestFingerprint"
+    ]
+  },
+  "attributes": {
+    "http.request.method": "method",
+    "http.response.status_code": "status",
+    "server.address": "serverAddress",
+    "url.path": "urlPath",
+    "invisra.request.phase": "phase",
+    "invisra.request.attempt": "attempt",
+    "invisra.request.outcome": "outcome",
+    "invisra.request.duration_ms": "durationMs",
+    "invisra.request.id": "requestId",
+    "invisra.request.retry_after_ms": "retryAfterMs",
+    "invisra.request.fingerprint": "requestFingerprint",
+    "invisra.operation.id": "id",
+    "invisra.operation.classification": "classification",
+    "invisra.operation.idempotency": "idempotency",
+    "invisra.operation.retry_policy": "retryPolicy",
+    "invisra.operation.confidence": "confidence",
+    "invisra.operation.confirmation_required": "confirmationRequired",
+    "invisra.operation.experimental": "experimental"
+  }
+}
