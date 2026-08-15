@@ -1,76 +1,47 @@
 # Invisra Labs organization profile
 
-This repository contains the GitHub organization profile content for Invisra Labs.
+This repository contains the GitHub organization profile content for Invisra Labs, along with reusable GitHub Actions workflows and build-time tooling shared across Invisra projects.
 
-GitHub renders the organization profile from [`profile/README.md`](profile/README.md). Local SVG assets for the rendered profile live in [`profile/assets/`](profile/assets/).
+GitHub renders the organization profile from [`profile/README.md`](profile/README.md). Local assets used by the profile live in [`profile/assets/`](profile/assets/).
 
 ## Reusable workflows
 
-Organization-wide reusable GitHub Actions workflows live in `.github/workflows/`.
+Organization-wide reusable workflows live in `.github/workflows/`.
 
-### API client coverage
+### API coverage
 
-`api-client-coverage.yml` standardizes validation of the `api-coverage.json` operation registry used by Invisra vendor API clients. Calling repositories retain their own event/path filters and invoke the shared workflow with `uses: invisra/.github/.github/workflows/api-client-coverage.yml@<ref>`.
+`api-client-coverage.yml` validates an `api-coverage.json` operation registry and can optionally run a repository-provided drift check.
 
 Inputs:
 
-- `node-version` — Node.js version used by the validator; defaults to `24`.
-- `validator-path` — repository-relative validator path; defaults to `scripts/validate-api-coverage.mjs`.
-- `run-drift` — additionally invokes the validator with `--drift`; defaults to `false`.
+- `node-version` — Node.js version; defaults to `24`.
+- `validator-path` — repository-relative validator path.
+- `run-drift` — optionally runs drift validation.
 
-### API client observability
+### API observability
 
-`api-client-observability.yml` validates the semantic operation metadata used by runtime capability registries and verifies that each caller's generated registries are fresh. The versioned machine-readable contract lives at `contracts/api-client-observability-v1.json`.
+`api-client-observability.yml` validates operation semantics and generated capability metadata against the versioned contract in `contracts/api-client-observability-v1.json`.
 
-Contract v1 standardizes:
+The contract covers lifecycle metadata, operation classification, idempotency, retry policy, confidence, confirmation requirements, experimental status, and shared telemetry attribute names.
 
-- lifecycle phases and outcomes;
-- operation classification, idempotency, retry policy, confidence, confirmation, and experimental metadata;
-- flat telemetry attribute names such as `invisra.operation.id`, `invisra.operation.retry_policy`, and `invisra.request.outcome`;
-- invariants including `retryPolicy: safe` requiring an idempotent operation and consequential operations requiring confirmation with no automatic retry by default.
+The workflow uses this repository only at build time. Consuming packages remain self-contained and do not gain a runtime dependency on this repository.
 
-The workflow checks out this repository separately, so published client packages have no runtime dependency on it. Callers pass `contract-ref` explicitly and should pin both the workflow `uses:` ref and `contract-ref` to the same reviewed commit SHA.
+## Shared generators
 
-The same checkout also supplies `scripts/generate-api-client-operation-capabilities.mjs`, the shared build-time generator for TypeScript and Python operation capability registries. Each client provides an `operation-capabilities.config.json` file containing repository-specific paths and, when needed, route-matching exceptions. For example:
+### Operation capabilities
 
-```json
-{
-  "manifest": "api-coverage.json",
-  "typescriptOutput": "typescript/src/operation-capabilities.ts",
-  "pythonOutput": "python/src/vendor_client/operation_capabilities.py",
-  "slashSpanningOperationIds": ["assets.get-image"]
-}
-```
+`scripts/generate-api-client-operation-capabilities.mjs` generates TypeScript and Python operation-capability registries from `api-coverage.json`.
 
-The generator derives the full runtime registry from the manifest, includes null-path capabilities for explicit lookup while excluding them from automatic URL matching, supports placeholders embedded anywhere in a path segment, and selects the most-specific matching route. By default placeholders match one path segment. `slashSpanningOperationIds` explicitly identifies operations whose placeholder values may contain `/`, for APIs that model a nested resource path inside one template parameter. Generated packages remain completely self-contained.
+Configuration can specify manifest/output paths and, when necessary, explicit route-matching exceptions such as placeholders that may span `/` characters. Null-path operations remain available for explicit lookup but are excluded from automatic URL matching.
 
-Observability workflow inputs:
+### API reference
 
-- `node-version` — Node.js version used by validation/generation; defaults to `24`.
-- `manifest-path` — API coverage manifest; defaults to `api-coverage.json`.
-- `generator-config-path` — shared generator config; defaults to `operation-capabilities.config.json`.
+`scripts/generate-api-client-reference.mjs` generates Markdown API reference documentation from `api-coverage.json`.
 
-### API reference generation
+A small JSON config selects the manifest, output path, and presentation profile. Multiple profiles are supported for projects that need different combinations of operation status, confidence, guard, deprecation, or governance details.
 
-`scripts/generate-api-client-reference.mjs` centralizes the build-time generation of `docs/api-reference.md` from each client's authoritative `api-coverage.json`. Calling repositories keep a tiny pinned bootstrap plus `api-reference.config.json`; published packages and generated documentation have no runtime dependency on this repository.
+Both generators support freshness checks so generated artifacts can remain checked in while their implementation stays centralized.
 
-Example configuration:
+## Pinning
 
-```json
-{
-  "manifest": "api-coverage.json",
-  "output": "docs/api-reference.md",
-  "profile": "standard"
-}
-```
-
-Supported profiles preserve the vendor-specific presentation already used by the four clients:
-
-- `standard` — compact operation/HTTP/symbol/semantics table used by McMaster-Carr;
-- `digikey` — separates verified/public and experimental/inferred operations and includes guard metadata;
-- `jlcpcb` — includes source confidence and caller-supplied path semantics;
-- `mouser` — includes deprecation status and Swagger/model-governance notes.
-
-The generator supports `--check` for byte-for-byte freshness validation, so repositories can keep generated Markdown checked in while removing duplicated rendering logic.
-
-Callers should pin reusable workflows, shared generators, contract references, and local bootstraps to stable tags or commit SHAs rather than tracking an unreviewed branch.
+Consumers should pin reusable workflows, contracts, and shared generators to reviewed tags or commit SHAs rather than tracking an unreviewed branch.
