@@ -4,11 +4,11 @@ on:
   workflow_call:
     inputs:
       contract-ref:
-        description: Immutable invisra/.github ref containing the observability contract and validator
+        description: Immutable invisra/.github ref containing the observability contract, validator, and generator
         required: true
         type: string
       node-version:
-        description: Node.js version used for validation
+        description: Node.js version used for validation and generation
         required: false
         type: string
         default: "24"
@@ -17,11 +17,11 @@ on:
         required: false
         type: string
         default: api-coverage.json
-      generator-path:
-        description: Repository-relative operation capability generator path
+      generator-config-path:
+        description: Repository-relative shared capability generator config
         required: false
         type: string
-        default: scripts/generate-operation-capabilities.mjs
+        default: operation-capabilities.config.json
 
 permissions:
   contents: read
@@ -47,4 +47,7 @@ jobs:
           "${{ inputs.manifest-path }}"
           .invisra-observability-contract/contracts/api-client-observability-v1.json
       - name: Verify generated capability registries
-        run: node "${{ inputs.generator-path }}" --check
+        run: >-
+          node .invisra-observability-contract/scripts/generate-api-client-operation-capabilities.mjs
+          --config "${{ inputs.generator-config-path }}"
+          --check
