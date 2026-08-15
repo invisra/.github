@@ -19,6 +19,7 @@ const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 const manifestPath = config.manifest ?? "api-coverage.json";
 const tsPath = config.typescriptOutput;
 const pyPath = config.pythonOutput;
+const slashSpanningOperationIds = new Set(config.slashSpanningOperationIds ?? []);
 
 if (!tsPath || !pyPath) {
   console.error("Config must define typescriptOutput and pythonOutput.");
@@ -39,6 +40,19 @@ const capabilities = manifest.operations.map((operation) => ({
 }));
 const nullablePaths = capabilities.some((capability) => capability.path === null);
 
+for (const operationId of slashSpanningOperationIds) {
+  const capability = capabilities.find((candidate) => candidate.id === operationId);
+  if (!capability) {
+    console.error(`slashSpanningOperationIds references unknown operation: ${operationId}`);
+    process.exit(1);
+  }
+  if (capability.path === null) {
+    console.error(`slashSpanningOperationIds cannot reference a null-path operation: ${operationId}`);
+    process.exit(1);
+  }
+}
+
+const slashSpanningIds = [...slashSpanningOperationIds].sort();
 const tsRows = capabilities.map((capability) => `  ${JSON.stringify(capability)},`).join("\n");
 const pyRows = capabilities
   .map(
@@ -49,8 +63,8 @@ const pyRows = capabilities
 
 const tsPathType = nullablePaths ? "string | null" : "string";
 const tsMatcherPredicate = nullablePaths
-  ? `      capability.path !== null &&\n      capability.method === normalizedMethod &&\n      pathMatches(capability.path, path),`
-  : `      capability.method === normalizedMethod && pathMatches(capability.path, path),`;
+  ? `      capability.path !== null &&\n      capability.method === normalizedMethod &&\n      pathMatches(\n        capability.path,\n        path,\n        SLASH_SPANNING_OPERATION_IDS.has(capability.id),\n      ),`
+  : `      capability.method === normalizedMethod &&\n      pathMatches(\n        capability.path,\n        path,\n        SLASH_SPANNING_OPERATION_IDS.has(capability.id),\n      ),`;
 const tsSort = nullablePaths
   ? `.sort((left, right) => routeSpecificity(right.path ?? "") - routeSpecificity(left.path ?? ""))[0]`
   : `.sort((left, right) => routeSpecificity(right.path) - routeSpecificity(left.path))[0]`;
@@ -76,14 +90,19 @@ export const OPERATION_CAPABILITIES: readonly OperationCapability[] = Object.fre
 ${tsRows}
 ]);
 
+const SLASH_SPANNING_OPERATION_IDS = new Set<string>(${JSON.stringify(slashSpanningIds)});
+
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^\${}()|[\\]\\\\]/g, "\\\\$&");
 }
 
-function pathMatches(template: string, actual: string): boolean {
+function pathMatches(template: string, actual: string, allowSlash: boolean): boolean {
+  const placeholderPattern = allowSlash ? ".+?" : "[^/]+";
   const pattern = \`^\${template
     .split(/(\\{[^}]+\\})/g)
-    .map((part) => (part.startsWith("{") && part.endsWith("}") ? "[^/]+" : escapeRegExp(part)))
+    .map((part) =>
+      part.startsWith("{") && part.endsWith("}") ? placeholderPattern : escapeRegExp(part),
+    )
     .join("")}\$\`;
   return new RegExp(pattern).test(actual);
 }
@@ -124,9 +143,10 @@ export function operationCapabilityAttributes(
 
 const pyPathType = nullablePaths ? "str | None" : "str";
 const pyMatcherPredicate = nullablePaths
-  ? `        if capability.path is not None\n        and capability.method == normalized_method\n        and _path_matches(capability.path, path)`
-  : `        if capability.method == normalized_method and _path_matches(capability.path, path)`;
+  ? `        if capability.path is not None\n        and capability.method == normalized_method\n        and _path_matches(\n            capability.path,\n            path,\n            capability.id in _SLASH_SPANNING_OPERATION_IDS,\n        )`
+  : `        if capability.method == normalized_method\n        and _path_matches(\n            capability.path,\n            path,\n            capability.id in _SLASH_SPANNING_OPERATION_IDS,\n        )`;
 const pyRoutePath = nullablePaths ? `capability.path or ""` : `capability.path`;
+const pySlashIds = slashSpanningIds.map((id) => JSON.stringify(id)).join(", ");
 
 const py = `\"\"\"Generated operation capability registry derived from ${manifestPath}.\"\"\"
 
@@ -158,11 +178,16 @@ OPERATION_CAPABILITIES: tuple[OperationCapability, ...] = (
 ${pyRows}
 )
 
+_SLASH_SPANNING_OPERATION_IDS = frozenset((${pySlashIds}${slashSpanningIds.length === 1 ? "," : ""}))
 
-def _path_matches(template: str, actual: str) -> bool:
+
+def _path_matches(template: str, actual: str, allow_slash: bool) -> bool:
     pieces = re.split(r\"(\\{[^}]+\\})\", template)
+    placeholder_pattern = r\".+?\" if allow_slash else r\"[^/]+\"
     pattern = \"\".join(
-        r\"[^/]+\" if piece.startswith(\"{\") and piece.endswith(\"}\") else re.escape(piece)
+        placeholder_pattern
+        if piece.startswith(\"{\") and piece.endswith(\"}\")
+        else re.escape(piece)
         for piece in pieces
     )
     return re.fullmatch(pattern, actual) is not None
