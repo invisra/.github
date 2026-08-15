@@ -12,7 +12,7 @@ Organization-wide reusable workflows live in `.github/workflows/`.
 
 `api-client-coverage.yml` validates an `api-coverage.json` operation registry with the shared build-time validator in `scripts/validate-api-client-coverage.mjs`. Projects provide a small JSON config describing source roots and any stricter manifest requirements, while upstream drift checks remain repository-specific.
 
-The workflow can also verify that checked-in conformance documentation matches the versioned shared contract, and optionally invoke a repository-provided drift validator after shared semantic and language-parity validation succeeds.
+The workflow can also verify checked-in API reference documentation, generated operation-capability registries, and conformance documentation against the shared generators. A repository-provided drift validator can optionally run after shared semantic, parity, and freshness validation succeeds.
 
 ### API observability
 
