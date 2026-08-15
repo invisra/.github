@@ -32,6 +32,11 @@ on:
         required: false
         type: string
         default: ""
+      conformance-fixtures-config-path:
+        description: Optional repository-relative Conformance v2 transport fixture config
+        required: false
+        type: string
+        default: ""
       drift-validator-path:
         description: Repository-relative upstream drift validator
         required: false
@@ -75,6 +80,13 @@ jobs:
           node .invisra-api-tooling/scripts/generate-api-client-conformance.mjs
           --source .invisra-api-tooling/contracts/api-client-conformance-v2.md
           --config "${{ inputs.conformance-config-path }}"
+          --check
+      - name: Verify conformance transport fixtures
+        if: ${{ inputs.conformance-fixtures-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/sync-api-client-conformance-fixtures.mjs
+          --source .invisra-api-tooling/contracts/api-client-conformance-v2-transport-fixtures.json
+          --config "${{ inputs.conformance-fixtures-config-path }}"
           --check
       - name: Check upstream API drift
         if: ${{ inputs.run-drift }}
