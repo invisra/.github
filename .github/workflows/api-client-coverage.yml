@@ -4,17 +4,26 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: Node.js version used to run the coverage validator
+        description: Node.js version used to run validation
         required: false
         type: string
         default: "24"
-      validator-path:
-        description: Repository-relative path to the API coverage validator
+      tooling-ref:
+        description: Immutable ref for the shared validation tooling
+        required: true
+        type: string
+      validator-config-path:
+        description: Repository-relative shared-validator config
+        required: false
+        type: string
+        default: api-coverage-validator.config.json
+      drift-validator-path:
+        description: Repository-relative upstream drift validator
         required: false
         type: string
         default: scripts/validate-api-coverage.mjs
       run-drift:
-        description: Also run the validator in upstream drift-detection mode
+        description: Also run repository-specific upstream drift validation
         required: false
         type: boolean
         default: false
@@ -26,12 +35,19 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout caller
+        uses: actions/checkout@v7
+      - name: Checkout shared tooling
+        uses: actions/checkout@v7
+        with:
+          repository: invisra/.github
+          ref: ${{ inputs.tooling-ref }}
+          path: .invisra-api-tooling
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ inputs.node-version }}
       - name: Validate API coverage manifest
-        run: node "${{ inputs.validator-path }}"
+        run: node .invisra-api-tooling/scripts/validate-api-client-coverage.mjs --config "${{ inputs.validator-config-path }}"
       - name: Check upstream API drift
         if: ${{ inputs.run-drift }}
-        run: node "${{ inputs.validator-path }}" --drift
+        run: node "${{ inputs.drift-validator-path }}" --drift
