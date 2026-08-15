@@ -50,4 +50,27 @@ Observability workflow inputs:
 - `manifest-path` — API coverage manifest; defaults to `api-coverage.json`.
 - `generator-config-path` — shared generator config; defaults to `operation-capabilities.config.json`.
 
-Callers should pin reusable workflows, contract references, and any local generator bootstrap to stable tags or commit SHAs rather than tracking an unreviewed branch.
+### API reference generation
+
+`scripts/generate-api-client-reference.mjs` centralizes the build-time generation of `docs/api-reference.md` from each client's authoritative `api-coverage.json`. Calling repositories keep a tiny pinned bootstrap plus `api-reference.config.json`; published packages and generated documentation have no runtime dependency on this repository.
+
+Example configuration:
+
+```json
+{
+  "manifest": "api-coverage.json",
+  "output": "docs/api-reference.md",
+  "profile": "standard"
+}
+```
+
+Supported profiles preserve the vendor-specific presentation already used by the four clients:
+
+- `standard` — compact operation/HTTP/symbol/semantics table used by McMaster-Carr;
+- `digikey` — separates verified/public and experimental/inferred operations and includes guard metadata;
+- `jlcpcb` — includes source confidence and caller-supplied path semantics;
+- `mouser` — includes deprecation status and Swagger/model-governance notes.
+
+The generator supports `--check` for byte-for-byte freshness validation, so repositories can keep generated Markdown checked in while removing duplicated rendering logic.
+
+Callers should pin reusable workflows, shared generators, contract references, and local bootstraps to stable tags or commit SHAs rather than tracking an unreviewed branch.
