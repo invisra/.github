@@ -31,17 +31,18 @@ Contract v1 standardizes:
 
 The workflow checks out this repository separately, so published client packages have no runtime dependency on it. Callers pass `contract-ref` explicitly and should pin both the workflow `uses:` ref and `contract-ref` to the same reviewed commit SHA.
 
-The same checkout also supplies `scripts/generate-api-client-operation-capabilities.mjs`, the shared build-time generator for TypeScript and Python operation capability registries. Each client provides an `operation-capabilities.config.json` file containing only repository-specific paths, for example:
+The same checkout also supplies `scripts/generate-api-client-operation-capabilities.mjs`, the shared build-time generator for TypeScript and Python operation capability registries. Each client provides an `operation-capabilities.config.json` file containing repository-specific paths and, when needed, route-matching exceptions. For example:
 
 ```json
 {
   "manifest": "api-coverage.json",
   "typescriptOutput": "typescript/src/operation-capabilities.ts",
-  "pythonOutput": "python/src/vendor_client/operation_capabilities.py"
+  "pythonOutput": "python/src/vendor_client/operation_capabilities.py",
+  "slashSpanningOperationIds": ["assets.get-image"]
 }
 ```
 
-The generator derives the full runtime registry from the manifest, includes null-path capabilities for explicit lookup while excluding them from automatic URL matching, supports placeholders embedded anywhere in a path segment, and selects the most-specific matching route. Generated packages remain completely self-contained.
+The generator derives the full runtime registry from the manifest, includes null-path capabilities for explicit lookup while excluding them from automatic URL matching, supports placeholders embedded anywhere in a path segment, and selects the most-specific matching route. By default placeholders match one path segment. `slashSpanningOperationIds` explicitly identifies operations whose placeholder values may contain `/`, for APIs that model a nested resource path inside one template parameter. Generated packages remain completely self-contained.
 
 Observability workflow inputs:
 
