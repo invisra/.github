@@ -12,7 +12,7 @@ Organization-wide reusable workflows live in `.github/workflows/`.
 
 `api-client-coverage.yml` validates an `api-coverage.json` operation registry with the shared build-time validator in `scripts/validate-api-client-coverage.mjs`. Projects provide a small JSON config describing source roots and any stricter manifest requirements, while upstream drift checks remain repository-specific.
 
-The workflow can optionally invoke a repository-provided drift validator after shared semantic and language-parity validation succeeds.
+The workflow can also verify that checked-in conformance documentation matches the versioned shared contract, and optionally invoke a repository-provided drift validator after shared semantic and language-parity validation succeeds.
 
 ### API observability
 
@@ -22,7 +22,11 @@ The contract covers lifecycle metadata, operation classification, idempotency, r
 
 The workflows use this repository only at build time. Consuming packages remain self-contained and do not gain a runtime dependency on this repository.
 
-## Shared generators
+## Shared contracts and generators
+
+### Conformance
+
+`contracts/api-client-conformance-v2.md` is the canonical human-readable Conformance v2 contract. `scripts/generate-api-client-conformance.mjs` copies that contract into checked-in project documentation and can append project-specific sections through a small JSON config.
 
 ### Operation capabilities
 
@@ -36,7 +40,7 @@ Configuration can specify manifest/output paths and, when necessary, explicit ro
 
 A small JSON config selects the manifest, output path, and presentation profile. Multiple profiles are supported for projects that need different combinations of operation status, confidence, guard, deprecation, or governance details.
 
-Both generators support freshness checks so generated artifacts can remain checked in while their implementation stays centralized.
+The generators support freshness checks so generated artifacts can remain checked in while their implementation stays centralized.
 
 ## Pinning
 

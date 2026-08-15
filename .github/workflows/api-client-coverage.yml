@@ -17,6 +17,11 @@ on:
         required: false
         type: string
         default: api-coverage-validator.config.json
+      conformance-config-path:
+        description: Optional repository-relative conformance generator config
+        required: false
+        type: string
+        default: ""
       drift-validator-path:
         description: Repository-relative upstream drift validator
         required: false
@@ -48,6 +53,13 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Validate API coverage manifest
         run: node .invisra-api-tooling/scripts/validate-api-client-coverage.mjs --config "${{ inputs.validator-config-path }}"
+      - name: Verify conformance documentation
+        if: ${{ inputs.conformance-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/generate-api-client-conformance.mjs
+          --source .invisra-api-tooling/contracts/api-client-conformance-v2.md
+          --config "${{ inputs.conformance-config-path }}"
+          --check
       - name: Check upstream API drift
         if: ${{ inputs.run-drift }}
         run: node "${{ inputs.drift-validator-path }}" --drift
