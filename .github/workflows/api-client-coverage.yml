@@ -17,6 +17,16 @@ on:
         required: false
         type: string
         default: api-coverage-validator.config.json
+      api-reference-config-path:
+        description: Optional repository-relative API reference generator config
+        required: false
+        type: string
+        default: ""
+      operation-capabilities-config-path:
+        description: Optional repository-relative operation-capability generator config
+        required: false
+        type: string
+        default: ""
       conformance-config-path:
         description: Optional repository-relative conformance generator config
         required: false
@@ -53,6 +63,18 @@ jobs:
           node-version: ${{ inputs.node-version }}
       - name: Validate API coverage manifest
         run: node .invisra-api-tooling/scripts/validate-api-client-coverage.mjs --config "${{ inputs.validator-config-path }}"
+      - name: Verify generated API reference
+        if: ${{ inputs.api-reference-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/generate-api-client-reference.mjs
+          --config "${{ inputs.api-reference-config-path }}"
+          --check
+      - name: Verify generated operation capabilities
+        if: ${{ inputs.operation-capabilities-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/generate-api-client-operation-capabilities.mjs
+          --config "${{ inputs.operation-capabilities-config-path }}"
+          --check
       - name: Verify conformance documentation
         if: ${{ inputs.conformance-config-path != '' }}
         run: >-
