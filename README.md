@@ -14,6 +14,12 @@ Organization-wide reusable workflows live in `.github/workflows/`.
 
 The workflow can also verify checked-in API reference documentation, generated operation-capability registries, and conformance documentation against the shared generators. A repository-provided drift validator can optionally run after shared semantic, parity, and freshness validation succeeds.
 
+### API package CI
+
+`api-client-package-ci.yml` provides the common Node/npm and Python package validation pipeline used by dual-package API clients: dependency installation and audit, lint/typecheck/tests, examples, package builds, and installed-artifact smoke tests. Repository-specific paths, package names, install extras, and test commands are supplied as workflow inputs.
+
+Clients with materially different build systems or monorepo/code-generation requirements should keep their package CI local rather than forcing those differences into the reusable workflow.
+
 ### API observability
 
 `api-client-observability.yml` validates operation semantics and generated capability metadata against the versioned contract in `contracts/api-client-observability-v1.json`.
