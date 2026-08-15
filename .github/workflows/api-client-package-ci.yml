@@ -1,0 +1,157 @@
+name: Reusable API client package CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version
+        required: false
+        type: string
+        default: "24"
+      python-version:
+        description: Python version
+        required: false
+        type: string
+        default: "3.12"
+      typescript-directory:
+        description: TypeScript package directory
+        required: true
+        type: string
+      typescript-lockfile:
+        description: npm lockfile path used for caching
+        required: true
+        type: string
+      typescript-package:
+        description: Published npm package specifier used for smoke import
+        required: true
+        type: string
+      typescript-example-command:
+        description: Command run from the TypeScript package directory
+        required: true
+        type: string
+      preflight-command:
+        description: Optional repository-root command run before package checks
+        required: false
+        type: string
+        default: ""
+      python-directory:
+        description: Python package directory
+        required: true
+        type: string
+      python-install-spec:
+        description: Editable install spec for Python development dependencies
+        required: false
+        type: string
+        default: ".[dev]"
+      python-typecheck-command:
+        description: Python typecheck command run from the package directory
+        required: false
+        type: string
+        default: mypy
+      python-test-command:
+        description: Python test command run from the package directory
+        required: false
+        type: string
+        default: pytest
+      python-example-command:
+        description: Python example command run from the package directory
+        required: false
+        type: string
+        default: python examples/observability.py
+      python-import-name:
+        description: Python import/package resource name used for wheel smoke validation
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: Lint, test, and validate packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.typescript-lockfile }}
+
+      - name: Run repository preflight
+        if: ${{ inputs.preflight-command != '' }}
+        run: ${{ inputs.preflight-command }}
+
+      - name: Install TypeScript dependencies
+        working-directory: ${{ inputs.typescript-directory }}
+        run: npm ci
+
+      - name: Audit production npm dependencies
+        working-directory: ${{ inputs.typescript-directory }}
+        run: npm audit --omit=dev --audit-level=moderate
+
+      - name: Check TypeScript package
+        working-directory: ${{ inputs.typescript-directory }}
+        run: npm run ci
+
+      - name: Run TypeScript example
+        working-directory: ${{ inputs.typescript-directory }}
+        run: ${{ inputs.typescript-example-command }}
+
+      - name: Pack and smoke-test npm artifact
+        working-directory: ${{ inputs.typescript-directory }}
+        shell: bash
+        run: |
+          tarball="$(npm pack --silent)"
+          test -f "$tarball"
+          smoke_dir="$(mktemp -d)"
+          cd "$smoke_dir"
+          npm init -y >/dev/null
+          npm install "$GITHUB_WORKSPACE/${{ inputs.typescript-directory }}/$tarball" >/dev/null
+          node --input-type=module -e "await import('${{ inputs.typescript-package }}')"
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: pip
+          cache-dependency-path: ${{ inputs.python-directory }}/pyproject.toml
+
+      - name: Install Python dependencies
+        working-directory: ${{ inputs.python-directory }}
+        run: pip install -e "${{ inputs.python-install-spec }}" build twine
+
+      - name: Lint Python package
+        working-directory: ${{ inputs.python-directory }}
+        run: ruff check .
+
+      - name: Format-check Python package
+        working-directory: ${{ inputs.python-directory }}
+        run: ruff format --check .
+
+      - name: Typecheck Python package
+        working-directory: ${{ inputs.python-directory }}
+        run: ${{ inputs.python-typecheck-command }}
+
+      - name: Test Python package
+        working-directory: ${{ inputs.python-directory }}
+        run: ${{ inputs.python-test-command }}
+
+      - name: Run Python example
+        working-directory: ${{ inputs.python-directory }}
+        run: ${{ inputs.python-example-command }}
+
+      - name: Build and validate Python artifacts
+        working-directory: ${{ inputs.python-directory }}
+        run: |
+          python -m build
+          python -m twine check dist/*
+
+      - name: Smoke-test Python wheel
+        working-directory: ${{ inputs.python-directory }}
+        shell: bash
+        run: |
+          smoke_dir="$(mktemp -d)"
+          python -m venv "$smoke_dir/venv"
+          "$smoke_dir/venv/bin/pip" install dist/*.whl >/dev/null
+          "$smoke_dir/venv/bin/python" -c "from importlib.resources import files; import ${{ inputs.python-import-name }}; assert files('${{ inputs.python-import-name }}').joinpath('py.typed').is_file()"
