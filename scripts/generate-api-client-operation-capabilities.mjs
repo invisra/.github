@@ -48,7 +48,14 @@ const pyRows = capabilities
   .join("\n");
 
 const tsPathType = nullablePaths ? "string | null" : "string";
-const ts = `/** Generated operation capability registry derived from ${manifestPath}. Do not edit manually. */
+const tsMatcherPredicate = nullablePaths
+  ? `      capability.path !== null &&\n      capability.method === normalizedMethod &&\n      pathMatches(capability.path, path),`
+  : `      capability.method === normalizedMethod && pathMatches(capability.path, path),`;
+const tsSort = nullablePaths
+  ? `.sort((left, right) => routeSpecificity(right.path ?? "") - routeSpecificity(left.path ?? ""))[0]`
+  : `.sort((left, right) => routeSpecificity(right.path) - routeSpecificity(left.path))[0]`;
+
+const ts = `/** Generated operation capability registry derived from ${manifestPath}. */
 export type OperationClassification = "read" | "mutation" | "consequential" | "unknown";
 export type OperationIdempotency = "idempotent" | "non-idempotent" | "unknown";
 export type OperationRetryPolicy = "safe" | "none" | "explicit";
@@ -70,19 +77,14 @@ ${tsRows}
 ]);
 
 function escapeRegExp(value: string): string {
-  return value.replace(/[|\\{}()[\\]^$+*?.-]/g, "\\\\$&");
+  return value.replace(/[.*+?^\${}()|[\\]\\\\]/g, "\\\\$&");
 }
 
 function pathMatches(template: string, actual: string): boolean {
-  const pattern =
-    "^" +
-    template
-      .split(/(\\{[^}]+\\})/g)
-      .map((part) =>
-        part.startsWith("{") && part.endsWith("}") ? "[^/]+" : escapeRegExp(part),
-      )
-      .join("") +
-    "$";
+  const pattern = \`^\${template
+    .split(/(\\{[^}]+\\})/g)
+    .map((part) => (part.startsWith("{") && part.endsWith("}") ? "[^/]+" : escapeRegExp(part)))
+    .join("")}\$\`;
   return new RegExp(pattern).test(actual);
 }
 
@@ -101,13 +103,8 @@ export function findOperationCapability(
   const normalizedMethod = method.toUpperCase();
   return OPERATION_CAPABILITIES.filter(
     (capability) =>
-      capability.path !== null &&
-      capability.method === normalizedMethod &&
-      pathMatches(capability.path, path),
-  ).sort(
-    (left, right) =>
-      routeSpecificity(right.path ?? "") - routeSpecificity(left.path ?? ""),
-  )[0];
+${tsMatcherPredicate}
+  )${tsSort};
 }
 
 export function operationCapabilityAttributes(
@@ -126,7 +123,12 @@ export function operationCapabilityAttributes(
 `;
 
 const pyPathType = nullablePaths ? "str | None" : "str";
-const py = `\"\"\"Generated operation capability registry derived from ${manifestPath}. Do not edit manually.\"\"\"
+const pyMatcherPredicate = nullablePaths
+  ? `        if capability.path is not None\n        and capability.method == normalized_method\n        and _path_matches(capability.path, path)`
+  : `        if capability.method == normalized_method and _path_matches(capability.path, path)`;
+const pyRoutePath = nullablePaths ? `capability.path or ""` : `capability.path`;
+
+const py = `\"\"\"Generated operation capability registry derived from ${manifestPath}.\"\"\"
 
 from __future__ import annotations
 
@@ -182,15 +184,9 @@ def find_operation_capability(method: str, path: str) -> OperationCapability | N
     matches = [
         capability
         for capability in OPERATION_CAPABILITIES
-        if capability.path is not None
-        and capability.method == normalized_method
-        and _path_matches(capability.path, path)
+${pyMatcherPredicate}
     ]
-    return max(
-        matches,
-        key=lambda capability: _route_specificity(capability.path or \"\"),
-        default=None,
-    )
+    return max(matches, key=lambda capability: _route_specificity(${pyRoutePath}), default=None)
 
 
 def operation_capability_attributes(
