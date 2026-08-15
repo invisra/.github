@@ -1,0 +1,10 @@
+{
+  "contractVersion": "2.0",
+  "retryableStatuses": [429, 502, 503, 504],
+  "fallbackSafeMethods": ["GET", "HEAD", "OPTIONS"],
+  "requestEventPhases": ["request", "response", "retry", "error"],
+  "requestOutcomes": ["not-sent", "known", "unknown"],
+  "operationClassifications": ["read", "mutation", "consequential", "unknown"],
+  "idempotency": ["idempotent", "non-idempotent", "unknown"],
+  "retryPolicies": ["safe", "none", "explicit"]
+}
