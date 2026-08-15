@@ -1,5 +1,5 @@
 {
-  "fixtureVersion": 1,
+  "fixtureVersion": 2,
   "conformanceVersion": "2.0",
   "lifecycle": {
     "phases": ["request", "response", "retry", "error"],
@@ -36,5 +36,22 @@
   "cancellation": {
     "message": "cancelled",
     "retryable": false
+  },
+  "semanticRetry": {
+    "retryableStatuses": [429, 502, 503, 504],
+    "fallbackSafeMethods": ["GET", "HEAD", "OPTIONS"],
+    "safeOperation": {
+      "retryPolicy": "safe",
+      "idempotency": "idempotent",
+      "transientStatus": 503,
+      "maxRetries": 1,
+      "expectedAttempts": 2
+    },
+    "nonRetryingOperation": {
+      "retryPolicy": "none",
+      "transientStatus": 503,
+      "maxRetries": 3,
+      "expectedAttempts": 1
+    }
   }
 }
