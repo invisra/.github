@@ -34,7 +34,7 @@ The workflows use this repository only at build time. Consuming packages remain 
 
 `contracts/api-client-conformance-v2.md` is the canonical human-readable Conformance v2 contract. `scripts/generate-api-client-conformance.mjs` copies that contract into checked-in project documentation and can append project-specific sections through a small JSON config.
 
-`contracts/api-client-conformance-v2-transport-fixtures.json` defines shared transport-level conformance vectors for lifecycle vocabulary, observable URL privacy, observer isolation and immutability, structured API-error metadata, timeout retryability, and caller cancellation. `scripts/sync-api-client-conformance-fixtures.mjs` copies the fixture dataset into client repositories so language-specific tests remain deterministic and offline while sharing one source of expected behavior.
+`contracts/api-client-conformance-v2-transport-fixtures.json` defines shared transport-level conformance vectors for lifecycle vocabulary, observable URL privacy, observer isolation and immutability, structured API-error metadata, timeout retryability, caller cancellation, and semantic retry policy. Semantic retry vectors define retryable statuses and expected attempts for safe versus non-retrying operations without prescribing a vendor-specific HTTP method. `scripts/sync-api-client-conformance-fixtures.mjs` copies the fixture dataset into client repositories so language-specific tests remain deterministic and offline while sharing one source of expected behavior.
 
 ### Operation capabilities
 
