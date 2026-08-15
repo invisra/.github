@@ -12,7 +12,7 @@ Organization-wide reusable workflows live in `.github/workflows/`.
 
 `api-client-coverage.yml` validates an `api-coverage.json` operation registry with the shared build-time validator in `scripts/validate-api-client-coverage.mjs`. Projects provide a small JSON config describing source roots and any stricter manifest requirements, while upstream drift checks remain repository-specific.
 
-The workflow can also verify checked-in API reference documentation, generated operation-capability registries, and conformance documentation against the shared generators. A repository-provided drift validator can optionally run after shared semantic, parity, and freshness validation succeeds.
+The workflow can also verify checked-in API reference documentation, generated operation-capability registries, conformance documentation, and Conformance v2 transport fixtures against the shared sources. A repository-provided drift validator can optionally run after shared semantic, parity, and freshness validation succeeds.
 
 ### API package CI
 
@@ -33,6 +33,8 @@ The workflows use this repository only at build time. Consuming packages remain 
 ### Conformance
 
 `contracts/api-client-conformance-v2.md` is the canonical human-readable Conformance v2 contract. `scripts/generate-api-client-conformance.mjs` copies that contract into checked-in project documentation and can append project-specific sections through a small JSON config.
+
+`contracts/api-client-conformance-v2-transport-fixtures.json` defines shared transport-level conformance vectors for lifecycle vocabulary, observable URL privacy, observer isolation and immutability, structured API-error metadata, timeout retryability, and caller cancellation. `scripts/sync-api-client-conformance-fixtures.mjs` copies the fixture dataset into client repositories so language-specific tests remain deterministic and offline while sharing one source of expected behavior.
 
 ### Operation capabilities
 

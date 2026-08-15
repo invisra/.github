@@ -1,0 +1,40 @@
+{
+  "fixtureVersion": 1,
+  "conformanceVersion": "2.0",
+  "lifecycle": {
+    "phases": ["request", "response", "retry", "error"],
+    "outcomes": ["not-sent", "known", "unknown"]
+  },
+  "urlSanitization": {
+    "input": "https://example.test/items?apiKey=secret#section",
+    "expected": "https://example.test/items"
+  },
+  "observer": {
+    "phase": "request",
+    "method": "GET",
+    "url": "https://example.test/items",
+    "attempt": 1,
+    "outcome": "not-sent",
+    "failureMessage": "observer failure",
+    "mustIsolateFailure": true,
+    "mustBeImmutable": true
+  },
+  "apiError": {
+    "message": "failed",
+    "status": 429,
+    "code": "RATE_LIMITED",
+    "requestId": "req-123",
+    "retryable": true,
+    "retryAfterMs": 2000,
+    "url": "https://example.test/items"
+  },
+  "timeout": {
+    "message": "timed out",
+    "timeoutMs": 250,
+    "retryable": true
+  },
+  "cancellation": {
+    "message": "cancelled",
+    "retryable": false
+  }
+}
