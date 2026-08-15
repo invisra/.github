@@ -70,14 +70,19 @@ ${tsRows}
 ]);
 
 function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^\\${}()|[\\]\\\\]/g, "\\\\$&");
+  return value.replace(/[|\\{}()[\\]^$+*?.-]/g, "\\\\$&");
 }
 
 function pathMatches(template: string, actual: string): boolean {
-  const pattern = `^${"${template"}
-    .split(/(\\{[^}]+\\})/g)
-    .map((part) => (part.startsWith("{") && part.endsWith("}") ? "[^/]+" : escapeRegExp(part)))
-    .join("")}$`;
+  const pattern =
+    "^" +
+    template
+      .split(/(\\{[^}]+\\})/g)
+      .map((part) =>
+        part.startsWith("{") && part.endsWith("}") ? "[^/]+" : escapeRegExp(part),
+      )
+      .join("") +
+    "$";
   return new RegExp(pattern).test(actual);
 }
 
