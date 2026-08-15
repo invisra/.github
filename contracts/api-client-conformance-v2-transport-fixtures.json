@@ -1,5 +1,5 @@
 {
-  "fixtureVersion": 2,
+  "fixtureVersion": 3,
   "conformanceVersion": "2.0",
   "lifecycle": {
     "phases": ["request", "response", "retry", "error"],
@@ -53,5 +53,21 @@
       "maxRetries": 3,
       "expectedAttempts": 1
     }
+  },
+  "confirmation": {
+    "confirmationRequired": true,
+    "confirmationSupplied": false,
+    "expectedAttempts": 0,
+    "retryable": false,
+    "expectedOutcome": "not-sent"
+  },
+  "unknownOutcome": {
+    "retryPolicy": "none",
+    "confirmationSupplied": true,
+    "transportFailure": "connection reset after request transmission",
+    "expectedAttempts": 1,
+    "retryable": false,
+    "expectedOutcome": "unknown",
+    "requiresReconciliation": true
   }
 }
