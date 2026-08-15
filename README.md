@@ -29,12 +29,24 @@ Contract v1 standardizes:
 - flat telemetry attribute names such as `invisra.operation.id`, `invisra.operation.retry_policy`, and `invisra.request.outcome`;
 - invariants including `retryPolicy: safe` requiring an idempotent operation and consequential operations requiring confirmation with no automatic retry by default.
 
-The workflow checks out the contract repository separately, so published client packages have no runtime dependency on this repository. Callers pass `contract-ref` explicitly and should pin both the workflow `uses:` ref and `contract-ref` to the same reviewed commit SHA.
+The workflow checks out this repository separately, so published client packages have no runtime dependency on it. Callers pass `contract-ref` explicitly and should pin both the workflow `uses:` ref and `contract-ref` to the same reviewed commit SHA.
 
-Other inputs:
+The same checkout also supplies `scripts/generate-api-client-operation-capabilities.mjs`, the shared build-time generator for TypeScript and Python operation capability registries. Each client provides an `operation-capabilities.config.json` file containing only repository-specific paths, for example:
 
-- `node-version` — Node.js version used by the validator; defaults to `24`.
+```json
+{
+  "manifest": "api-coverage.json",
+  "typescriptOutput": "typescript/src/operation-capabilities.ts",
+  "pythonOutput": "python/src/vendor_client/operation_capabilities.py"
+}
+```
+
+The generator derives the full runtime registry from the manifest, includes null-path capabilities for explicit lookup while excluding them from automatic URL matching, supports placeholders embedded anywhere in a path segment, and selects the most-specific matching route. Generated packages remain completely self-contained.
+
+Observability workflow inputs:
+
+- `node-version` — Node.js version used by validation/generation; defaults to `24`.
 - `manifest-path` — API coverage manifest; defaults to `api-coverage.json`.
-- `generator-path` — operation capability generator; defaults to `scripts/generate-operation-capabilities.mjs`.
+- `generator-config-path` — shared generator config; defaults to `operation-capabilities.config.json`.
 
-Callers should pin reusable workflows and contract references to stable tags or commit SHAs rather than tracking an unreviewed branch.
+Callers should pin reusable workflows, contract references, and any local generator bootstrap to stable tags or commit SHAs rather than tracking an unreviewed branch.
