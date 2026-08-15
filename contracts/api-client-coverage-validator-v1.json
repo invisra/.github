@@ -1,0 +1,22 @@
+{
+  "contractVersion": 1,
+  "schemaVersion": 2,
+  "classifications": ["read", "mutation", "consequential", "unknown"],
+  "idempotency": ["idempotent", "non-idempotent", "unknown"],
+  "retryPolicy": ["safe", "none", "explicit"],
+  "confidence": [
+    "official-public",
+    "public-documented",
+    "cross-referenced",
+    "inferred-contract",
+    "caller-verified",
+    "portal-gated"
+  ],
+  "invariants": [
+    "safe retry requires idempotent semantics",
+    "consequential operations require confirmation",
+    "consequential operations use retryPolicy none",
+    "read operations do not require confirmation",
+    "operation ids and family/operation pairs are unique"
+  ]
+}

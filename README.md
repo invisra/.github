@@ -10,13 +10,9 @@ Organization-wide reusable workflows live in `.github/workflows/`.
 
 ### API coverage
 
-`api-client-coverage.yml` validates an `api-coverage.json` operation registry and can optionally run a repository-provided drift check.
+`api-client-coverage.yml` validates an `api-coverage.json` operation registry with the shared build-time validator in `scripts/validate-api-client-coverage.mjs`. Projects provide a small JSON config describing source roots and any stricter manifest requirements, while upstream drift checks remain repository-specific.
 
-Inputs:
-
-- `node-version` — Node.js version; defaults to `24`.
-- `validator-path` — repository-relative validator path.
-- `run-drift` — optionally runs drift validation.
+The workflow can optionally invoke a repository-provided drift validator after shared semantic and language-parity validation succeeds.
 
 ### API observability
 
@@ -24,7 +20,7 @@ Inputs:
 
 The contract covers lifecycle metadata, operation classification, idempotency, retry policy, confidence, confirmation requirements, experimental status, and shared telemetry attribute names.
 
-The workflow uses this repository only at build time. Consuming packages remain self-contained and do not gain a runtime dependency on this repository.
+The workflows use this repository only at build time. Consuming packages remain self-contained and do not gain a runtime dependency on this repository.
 
 ## Shared generators
 
@@ -44,4 +40,4 @@ Both generators support freshness checks so generated artifacts can remain check
 
 ## Pinning
 
-Consumers should pin reusable workflows, contracts, and shared generators to reviewed tags or commit SHAs rather than tracking an unreviewed branch.
+Consumers should pin reusable workflows, contracts, validators, and shared generators to reviewed tags or commit SHAs rather than tracking an unreviewed branch.
