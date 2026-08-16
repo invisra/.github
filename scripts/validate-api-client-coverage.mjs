@@ -31,11 +31,14 @@ const validRetryPolicy = new Set(["safe", "none", "explicit"]);
 const validMethods = new Set(["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]);
 
 if (manifest.schemaVersion !== 2) throw new Error("api-coverage.json schemaVersion must be 2");
-if (manifest.conformanceVersion !== canonicalConformanceVersion) {
-  throw new Error(`conformanceVersion must match canonical contract ${canonicalConformanceVersion}`);
-}
-if (config.conformanceVersion && config.conformanceVersion !== canonicalConformanceVersion) {
+if (config.conformanceVersion !== canonicalConformanceVersion) {
   throw new Error(`validator conformanceVersion must match canonical contract ${canonicalConformanceVersion}`);
+}
+if (
+  manifest.conformanceVersion != null &&
+  manifest.conformanceVersion !== canonicalConformanceVersion
+) {
+  throw new Error(`manifest conformanceVersion must match canonical contract ${canonicalConformanceVersion}`);
 }
 if (!manifest.vendor || !/^\d{4}-\d{2}-\d{2}$/.test(manifest.verifiedAt ?? "")) {
   throw new Error("vendor and ISO verifiedAt are required");
@@ -115,7 +118,7 @@ for (const op of manifest.operations) {
 
 console.log(
   `Validated ${manifest.operations.length} ${manifest.vendor} operations ` +
-    `(verified ${manifest.verifiedAt}, conformance ${manifest.conformanceVersion}).`,
+    `(verified ${manifest.verifiedAt}, conformance ${config.conformanceVersion}).`,
 );
 
 function readRoots(roots, extensions) {
