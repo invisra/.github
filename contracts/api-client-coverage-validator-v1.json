@@ -13,6 +13,8 @@
     "portal-gated"
   ],
   "invariants": [
+    "validator conformanceVersion matches the canonical conformance contract",
+    "manifest conformanceVersion, when declared, matches the canonical conformance contract",
     "safe retry requires idempotent semantics",
     "consequential operations require confirmation",
     "consequential operations use retryPolicy none",

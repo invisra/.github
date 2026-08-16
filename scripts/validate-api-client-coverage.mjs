@@ -12,6 +12,10 @@ if (!fs.existsSync(configPath)) throw new Error(`coverage validator config not f
 const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 const manifestPath = config.manifest ?? "api-coverage.json";
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+const conformanceContract = JSON.parse(
+  fs.readFileSync(new URL("../contracts/api-client-conformance-v2.json", import.meta.url), "utf8"),
+);
+const canonicalConformanceVersion = conformanceContract.contractVersion;
 
 const validConfidence = new Set([
   "official-public",
@@ -27,8 +31,14 @@ const validRetryPolicy = new Set(["safe", "none", "explicit"]);
 const validMethods = new Set(["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]);
 
 if (manifest.schemaVersion !== 2) throw new Error("api-coverage.json schemaVersion must be 2");
-if (config.conformanceVersion && manifest.conformanceVersion !== config.conformanceVersion) {
-  throw new Error(`conformanceVersion must be ${config.conformanceVersion}`);
+if (config.conformanceVersion !== canonicalConformanceVersion) {
+  throw new Error(`validator conformanceVersion must match canonical contract ${canonicalConformanceVersion}`);
+}
+if (
+  manifest.conformanceVersion != null &&
+  manifest.conformanceVersion !== canonicalConformanceVersion
+) {
+  throw new Error(`manifest conformanceVersion must match canonical contract ${canonicalConformanceVersion}`);
 }
 if (!manifest.vendor || !/^\d{4}-\d{2}-\d{2}$/.test(manifest.verifiedAt ?? "")) {
   throw new Error("vendor and ISO verifiedAt are required");
@@ -106,7 +116,10 @@ for (const op of manifest.operations) {
   }
 }
 
-console.log(`Validated ${manifest.operations.length} ${manifest.vendor} operations (verified ${manifest.verifiedAt}).`);
+console.log(
+  `Validated ${manifest.operations.length} ${manifest.vendor} operations ` +
+    `(verified ${manifest.verifiedAt}, conformance ${config.conformanceVersion}).`,
+);
 
 function readRoots(roots, extensions) {
   if (!Array.isArray(roots) || roots.length === 0) throw new Error("language source roots must be configured");
