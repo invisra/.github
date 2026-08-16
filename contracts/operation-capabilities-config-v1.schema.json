@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.invisra.ai/api-client/operation-capabilities-config-v1.schema.json",
+  "title": "Invisra operation capability generator config v1",
+  "type": "object",
+  "required": ["typescriptOutput", "pythonOutput"],
+  "additionalProperties": false,
+  "properties": {
+    "manifest": {"type": "string", "minLength": 1},
+    "typescriptOutput": {"type": "string", "minLength": 1},
+    "pythonOutput": {"type": "string", "minLength": 1},
+    "slashSpanningOperationIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}
