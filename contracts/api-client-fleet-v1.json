@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "baselines": {
+    "apiCoverageToolingRef": "f90ce5367caa36f88cab8a8e0f783e99601e4f2a"
+  },
+  "clients": [
+    {
+      "id": "digikey",
+      "repository": "invisra/digikey-api-client",
+      "vendor": "Digi-Key",
+      "checkout": "digikey",
+      "typescriptRoot": "ts/src",
+      "pythonRoot": "python/src",
+      "requiredPaths": [
+        ".github/workflows/api-coverage.yml",
+        "api-coverage.json",
+        "api-coverage-validator.config.json",
+        "public-api-surface.json",
+        "shared-tooling-pins.json",
+        "operation-capabilities.config.json",
+        "conformance.config.json",
+        "conformance-fixtures.config.json"
+      ]
+    },
+    {
+      "id": "mcmaster",
+      "repository": "invisra/mcmaster-carr-api-client",
+      "vendor": "McMaster-Carr",
+      "checkout": "mcmaster",
+      "typescriptRoot": "typescript/src",
+      "pythonRoot": "python/src",
+      "requiredPaths": [
+        ".github/workflows/api-coverage.yml",
+        "api-coverage.json",
+        "api-coverage-validator.config.json",
+        "public-api-surface.json",
+        "shared-tooling-pins.json",
+        "operation-capabilities.config.json",
+        "conformance.config.json",
+        "conformance-fixtures.config.json"
+      ]
+    },
+    {
+      "id": "mouser",
+      "repository": "invisra/mouser-api-client",
+      "vendor": "Mouser",
+      "checkout": "mouser",
+      "typescriptRoot": "packages/typescript/mouser-api-client/src",
+      "pythonRoot": "packages/python/mouser-api-client/src",
+      "requiredPaths": [
+        ".github/workflows/api-coverage.yml",
+        "api-coverage.json",
+        "api-coverage-validator.config.json",
+        "public-api-surface.json",
+        "shared-tooling-pins.json",
+        "operation-capabilities.config.json",
+        "conformance.config.json",
+        "conformance-fixtures.config.json"
+      ]
+    },
+    {
+      "id": "jlcpcb",
+      "repository": "invisra/jlcpcb-api-client",
+      "vendor": "JLCPCB",
+      "checkout": "jlcpcb",
+      "typescriptRoot": "typescript/src",
+      "pythonRoot": "python/src",
+      "requiredPaths": [
+        ".github/workflows/api-coverage.yml",
+        "api-coverage.json",
+        "api-coverage-validator.config.json",
+        "public-api-surface.json",
+        "shared-tooling-pins.json",
+        "operation-capabilities.config.json",
+        "conformance.config.json",
+        "conformance-fixtures.config.json"
+      ]
+    }
+  ]
+}
