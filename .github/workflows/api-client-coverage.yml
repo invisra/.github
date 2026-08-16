@@ -27,6 +27,11 @@ on:
         required: false
         type: string
         default: api-coverage-validator.config.json
+      coverage-manifest-path:
+        description: Repository-relative API coverage manifest
+        required: false
+        type: string
+        default: api-coverage.json
       api-reference-generator-path:
         description: Optional repository-relative API reference generator bootstrap
         required: false
@@ -37,6 +42,11 @@ on:
         required: false
         type: string
         default: ""
+      operation-capabilities-config-path:
+        description: Repository-relative operation-capability generator config
+        required: false
+        type: string
+        default: operation-capabilities.config.json
       conformance-config-path:
         description: Optional repository-relative conformance generator config
         required: false
@@ -76,17 +86,45 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ inputs.node-version }}
+      - name: Validate tooling pin schema
+        if: ${{ inputs.tooling-pins-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/validate-json-schema.mjs
+          --schema .invisra-api-tooling/contracts/shared-tooling-pins-v1.schema.json
+          --instance "${{ inputs.tooling-pins-path }}"
       - name: Validate shared tooling pins
         if: ${{ inputs.tooling-pins-path != '' }}
         run: node .invisra-api-tooling/scripts/validate-api-client-tooling-pins.mjs --config "${{ inputs.tooling-pins-path }}"
+      - name: Validate public API surface schema
+        if: ${{ inputs.public-api-surface-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/validate-json-schema.mjs
+          --schema .invisra-api-tooling/contracts/public-api-surface-v1.schema.json
+          --instance "${{ inputs.public-api-surface-path }}"
       - name: Validate public API surface
         if: ${{ inputs.public-api-surface-path != '' }}
         run: node .invisra-api-tooling/scripts/validate-api-client-public-surface.mjs --config "${{ inputs.public-api-surface-path }}"
+      - name: Validate coverage validator config schema
+        run: >-
+          node .invisra-api-tooling/scripts/validate-json-schema.mjs
+          --schema .invisra-api-tooling/contracts/api-coverage-validator-config-v1.schema.json
+          --instance "${{ inputs.validator-config-path }}"
+      - name: Validate API coverage manifest schema
+        run: >-
+          node .invisra-api-tooling/scripts/validate-json-schema.mjs
+          --schema .invisra-api-tooling/contracts/api-coverage-v2.schema.json
+          --instance "${{ inputs.coverage-manifest-path }}"
       - name: Validate API coverage manifest
         run: node .invisra-api-tooling/scripts/validate-api-client-coverage.mjs --config "${{ inputs.validator-config-path }}"
       - name: Verify generated API reference
         if: ${{ inputs.api-reference-generator-path != '' }}
         run: node "${{ inputs.api-reference-generator-path }}" --check
+      - name: Validate operation capability config schema
+        if: ${{ inputs.operation-capabilities-generator-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/validate-json-schema.mjs
+          --schema .invisra-api-tooling/contracts/operation-capabilities-config-v1.schema.json
+          --instance "${{ inputs.operation-capabilities-config-path }}"
       - name: Verify generated operation capabilities
         if: ${{ inputs.operation-capabilities-generator-path != '' }}
         run: node "${{ inputs.operation-capabilities-generator-path }}" --check
