@@ -178,7 +178,7 @@ OPERATION_CAPABILITIES: tuple[OperationCapability, ...] = (
 ${pyRows}
 )
 
-_SLASH_SPANNING_OPERATION_IDS = frozenset((${pySlashIds}${slashSpanningIds.length === 1 ? "," : ""}))
+_SLASH_SPANNING_OPERATION_IDS: frozenset[str] = frozenset((${pySlashIds}${slashSpanningIds.length === 1 ? "," : ""}))
 
 
 def _path_matches(template: str, actual: str, allow_slash: bool) -> bool:
