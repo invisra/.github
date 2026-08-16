@@ -37,12 +37,15 @@ function validate(schemaNode, value, location, errors) {
     errors.push(`${location}: must be one of ${schemaNode.enum.map(JSON.stringify).join(", ")}`);
   }
   if (schemaNode.anyOf) {
-    const valid = schemaNode.anyOf.some((candidate) => validates(candidate, value));
-    if (!valid) errors.push(`${location}: must match at least one anyOf schema`);
+    const branches = schemaNode.anyOf.map((candidate) => validationErrors(candidate, value, location));
+    if (!branches.some((branch) => branch.length === 0)) {
+      const details = [...new Set(branches.flat())].join("; ");
+      errors.push(`${location}: must match at least one anyOf schema${details ? ` (${details})` : ""}`);
+    }
     return;
   }
   if (schemaNode.oneOf) {
-    const matches = schemaNode.oneOf.filter((candidate) => validates(candidate, value)).length;
+    const matches = schemaNode.oneOf.filter((candidate) => validationErrors(candidate, value, location).length === 0).length;
     if (matches !== 1) errors.push(`${location}: must match exactly one oneOf schema`);
     return;
   }
@@ -97,10 +100,10 @@ function validate(schemaNode, value, location, errors) {
   }
 }
 
-function validates(schema, value) {
+function validationErrors(schemaNode, value, location) {
   const errors = [];
-  validate(schema, value, "$", errors);
-  return errors.length === 0;
+  validate(schemaNode, value, location, errors);
+  return errors;
 }
 
 function matchesType(type, value) {
