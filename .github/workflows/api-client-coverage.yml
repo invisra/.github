@@ -17,6 +17,11 @@ on:
         required: false
         type: string
         default: ""
+      public-api-surface-path:
+        description: Optional repository-relative public API surface contract
+        required: false
+        type: string
+        default: ""
       validator-config-path:
         description: Repository-relative shared-validator config
         required: false
@@ -74,6 +79,9 @@ jobs:
       - name: Validate shared tooling pins
         if: ${{ inputs.tooling-pins-path != '' }}
         run: node .invisra-api-tooling/scripts/validate-api-client-tooling-pins.mjs --config "${{ inputs.tooling-pins-path }}"
+      - name: Validate public API surface
+        if: ${{ inputs.public-api-surface-path != '' }}
+        run: node .invisra-api-tooling/scripts/validate-api-client-public-surface.mjs --config "${{ inputs.public-api-surface-path }}"
       - name: Validate API coverage manifest
         run: node .invisra-api-tooling/scripts/validate-api-client-coverage.mjs --config "${{ inputs.validator-config-path }}"
       - name: Verify generated API reference
