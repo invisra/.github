@@ -1,0 +1,12 @@
+{
+  "contractVersion": 1,
+  "schemaVersion": 1,
+  "refFormat": "40-character lowercase Git commit SHA",
+  "invariants": [
+    "pin names are unique kebab-case identifiers",
+    "every pin names one immutable shared-tooling commit",
+    "every configured file contains the declared commit at least once unless an exact occurrence count is specified",
+    "workflow call refs and companion tooling or contract refs may be locked to the same commit by exact occurrence count",
+    "component pins may intentionally differ from one another"
+  ]
+}
