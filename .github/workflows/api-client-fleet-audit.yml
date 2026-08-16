@@ -1,0 +1,59 @@
+name: API client fleet audit
+
+on:
+  pull_request:
+    paths:
+      - "contracts/api-client-fleet-v1.json"
+      - "scripts/audit-api-client-fleet.mjs"
+      - "tests/api-client-fleet.test.mjs"
+      - ".github/workflows/api-client-fleet-audit.yml"
+  push:
+    branches: [main]
+    paths:
+      - "contracts/api-client-fleet-v1.json"
+      - "scripts/audit-api-client-fleet.mjs"
+      - "tests/api-client-fleet.test.mjs"
+      - ".github/workflows/api-client-fleet-audit.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "43 13 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout shared tooling
+        uses: actions/checkout@v7
+        with:
+          path: shared
+      - name: Checkout Digi-Key
+        uses: actions/checkout@v7
+        with:
+          repository: invisra/digikey-api-client
+          path: .fleet/digikey
+      - name: Checkout McMaster-Carr
+        uses: actions/checkout@v7
+        with:
+          repository: invisra/mcmaster-carr-api-client
+          path: .fleet/mcmaster
+      - name: Checkout Mouser
+        uses: actions/checkout@v7
+        with:
+          repository: invisra/mouser-api-client
+          path: .fleet/mouser
+      - name: Checkout JLCPCB
+        uses: actions/checkout@v7
+        with:
+          repository: invisra/jlcpcb-api-client
+          path: .fleet/jlcpcb
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - name: Audit API client fleet
+        run: >-
+          node shared/scripts/audit-api-client-fleet.mjs
+          --registry shared/contracts/api-client-fleet-v1.json
+          --root .fleet
