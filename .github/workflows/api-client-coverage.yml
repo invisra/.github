@@ -12,6 +12,11 @@ on:
         description: Immutable ref for the shared validation tooling
         required: true
         type: string
+      tooling-pins-path:
+        description: Optional repository-relative shared tooling pin lock
+        required: false
+        type: string
+        default: ""
       validator-config-path:
         description: Repository-relative shared-validator config
         required: false
@@ -66,6 +71,9 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ inputs.node-version }}
+      - name: Validate shared tooling pins
+        if: ${{ inputs.tooling-pins-path != '' }}
+        run: node .invisra-api-tooling/scripts/validate-api-client-tooling-pins.mjs --config "${{ inputs.tooling-pins-path }}"
       - name: Validate API coverage manifest
         run: node .invisra-api-tooling/scripts/validate-api-client-coverage.mjs --config "${{ inputs.validator-config-path }}"
       - name: Verify generated API reference
