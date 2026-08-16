@@ -1,0 +1,10 @@
+{
+  "contractVersion": 1,
+  "schemaVersion": 1,
+  "invariants": [
+    "required TypeScript symbols remain reachable from the configured package entrypoint",
+    "required Python symbols remain present in the configured package __all__ export list",
+    "TypeScript and Python required symbol names are language-specific and need not be identical",
+    "the contract protects intentionally supported package-root API without freezing every model or generated type"
+  ]
+}
