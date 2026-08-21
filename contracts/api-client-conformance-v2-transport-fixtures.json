@@ -1,5 +1,5 @@
 {
-  "fixtureVersion": 3,
+  "fixtureVersion": 4,
   "conformanceVersion": "2.0",
   "lifecycle": {
     "phases": ["request", "response", "retry", "error"],
@@ -32,6 +32,23 @@
     "message": "timed out",
     "timeoutMs": 250,
     "retryable": true
+  },
+  "numericValidation": {
+    "timeout": {
+      "valid": [0.001, 1, 30.5],
+      "invalidKinds": ["zero", "negative", "boolean", "nan", "positive-infinity", "negative-infinity"],
+      "mustBeFinite": true,
+      "mustBePositive": true,
+      "mustRejectBoolean": true
+    },
+    "maxRetries": {
+      "valid": [0, 1, 3],
+      "invalidKinds": ["negative", "boolean", "fractional", "nan", "positive-infinity", "negative-infinity"],
+      "mustBeFinite": true,
+      "mustBeInteger": true,
+      "mustBeNonNegative": true,
+      "mustRejectBoolean": true
+    }
   },
   "cancellation": {
     "message": "cancelled",
