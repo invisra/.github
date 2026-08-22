@@ -6,16 +6,14 @@ on:
       - "scripts/**"
       - "contracts/**"
       - "tests/**"
-      - ".github/workflows/api-client-coverage.yml"
-      - ".github/workflows/shared-tooling-tests.yml"
+      - ".github/workflows/**"
   push:
     branches: [main]
     paths:
       - "scripts/**"
       - "contracts/**"
       - "tests/**"
-      - ".github/workflows/api-client-coverage.yml"
-      - ".github/workflows/shared-tooling-tests.yml"
+      - ".github/workflows/**"
 
 permissions:
   contents: read
@@ -28,5 +26,10 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: "24"
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.x"
+      - name: Lint GitHub Actions workflows
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 .github/workflows/*.yml
       - name: Run shared tooling tests
         run: node --test tests/*.test.mjs
