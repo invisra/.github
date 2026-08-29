@@ -1,0 +1,37 @@
+Invisra Labs LLC Proprietary Software — All Rights Reserved
+
+Copyright (c) 2026 Invisra Labs LLC. All rights reserved.
+
+This software and its source code, object code, documentation, designs, data
+files, and all associated materials (collectively, the "Software") are the
+confidential, proprietary, and trade secret property of Invisra Labs LLC, doing
+business as "Invisra" ("Invisra").
+
+NO LICENSE IS GRANTED. Possession of, or access to, the Software does not
+convey any license or right to use it. No right to use, copy, reproduce,
+modify, adapt, translate, merge, publish, distribute, sublicense, sell, lease,
+lend, transmit, host, display, perform, disclose, decompile, disassemble, or
+reverse engineer the Software, or to create derivative works from it, is
+granted by implication, estoppel, or otherwise.
+
+Use is permitted only by employees, officers, and contractors of Invisra who
+have a current written agreement with Invisra containing confidentiality and
+intellectual property assignment obligations, and only for the internal
+business purposes of Invisra. All other use is prohibited.
+
+Unauthorized access, copying, use, or disclosure may violate applicable
+copyright, trade secret, contract, and computer fraud laws, and may result in
+civil liability and criminal penalties.
+
+If you received the Software in error or without authorization, you must not
+use it, must not retain a copy, and must notify Invisra immediately at
+legal@invisra.ai and destroy all copies in your possession or control.
+
+Certain components of the Software may incorporate third-party open source
+materials licensed under their own terms. Those terms govern only those
+components and are set out in the NOTICE or THIRD-PARTY-LICENSES file, if
+present. Nothing in this notice grants rights under Invisra's own materials.
+
+Invisra Labs LLC
+legal@invisra.ai
+https://invisra.ai
