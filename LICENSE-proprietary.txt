@@ -1,0 +1,268 @@
+INVISRA LABS LLC PROPRIETARY SOFTWARE LICENSE
+Version 1.0
+
+Copyright (c) 2026 Invisra Labs LLC. All rights reserved.
+
+IMPORTANT — READ CAREFULLY. This Invisra Labs LLC Proprietary Software License
+(this "License") is a binding agreement between Invisra Labs LLC, a limited
+liability company doing business as "Invisra" ("Invisra"), and the individual or
+entity that accesses, installs, or uses the Software ("Licensee"). By downloading, installing,
+accessing, or using the Software, Licensee accepts this License. If Licensee
+does not accept it, Licensee must not access or use the Software and must
+destroy all copies in its possession or control.
+
+1. DEFINITIONS
+
+1.1 "Software" means the computer programs identified in the Order, in source
+code and object code form, together with all associated libraries, models,
+schemas, configuration, sample data, documentation, and any Updates provided by
+Invisra.
+
+1.2 "Order" means a written or electronic ordering document, subscription,
+statement of work, evaluation authorization, or master agreement executed or
+otherwise agreed by Invisra and Licensee that references or incorporates this
+License.
+
+1.3 "Authorized Users" means Licensee's employees and individual contractors
+who (a) are bound by written obligations of confidentiality at least as
+protective as those in this License, and (b) access the Software solely on
+Licensee's behalf and within the scope permitted by the Order.
+
+1.4 "Internal Business Purposes" means use for the internal operations of
+Licensee's own business, and does not include use on behalf of, or for the
+benefit of, any third party.
+
+1.5 "Updates" means bug fixes, patches, and new versions of the Software that
+Invisra elects to make available to Licensee. Updates are Software.
+
+2. GRANT OF LICENSE
+
+2.1 Grant. Subject to Licensee's continuous compliance with this License and
+the Order, and to payment of all applicable fees, Invisra grants Licensee a
+limited, non-exclusive, non-transferable, non-sublicensable, revocable license,
+during the term stated in the Order, to install and use the Software in object
+code form, in the quantities and on the systems specified in the Order, solely
+for Licensee's Internal Business Purposes.
+
+2.2 Source Code. No license to source code is granted except where an Order
+expressly grants it. Where source code access is granted, it is granted solely
+for the purposes stated in the Order (for example, review, integration, or
+escrow verification) and remains subject to every restriction in Section 3.
+
+2.3 Copies. Licensee may make a reasonable number of copies of the Software
+solely for backup and disaster recovery, provided all proprietary notices are
+reproduced without alteration on each copy.
+
+2.4 No Other Rights. This License grants only the rights expressly stated. All
+rights not expressly granted are reserved by Invisra. No rights are granted by
+implication, estoppel, exhaustion, or otherwise, and no patent license is
+granted except as strictly necessary to exercise the rights in Section 2.1.
+
+3. RESTRICTIONS
+
+Licensee shall not, and shall not permit or enable any third party to:
+
+(a) copy, reproduce, distribute, publish, sell, resell, lease, rent, lend,
+    assign, sublicense, host, or otherwise make the Software available to any
+    third party, including via service bureau, timesharing, outsourcing,
+    managed service, or software-as-a-service arrangement;
+
+(b) modify, adapt, translate, or create derivative works of the Software;
+
+(c) reverse engineer, decompile, disassemble, or otherwise attempt to derive
+    the source code, algorithms, models, data structures, or underlying ideas
+    of the Software, except to the minimum extent that such activity cannot be
+    prohibited under applicable law and only after written notice to Invisra;
+
+(d) remove, obscure, or alter any copyright, trademark, patent, or other
+    proprietary notice, watermark, licensing mechanism, or attribution;
+
+(e) circumvent, disable, or interfere with any license key, usage metering,
+    entitlement check, technical protection measure, or security feature;
+
+(f) use the Software to develop, train, or improve any product or service that
+    competes with the Software, or use output of the Software as training data
+    for any machine learning model without Invisra's prior written consent;
+
+(g) publish or disclose any benchmark, performance test, security assessment,
+    or comparative evaluation of the Software without Invisra's prior written
+    consent;
+
+(h) use the Software in violation of any applicable law, or in any high-risk
+    application where failure could reasonably be expected to result in death,
+    personal injury, or severe physical, environmental, or property damage,
+    unless expressly authorized in the Order; or
+
+(i) exceed the scope, seat count, instance count, environment, or territory
+    specified in the Order.
+
+Licensee is responsible for the acts and omissions of its Authorized Users and
+for any use of the Software under its credentials.
+
+4. OWNERSHIP
+
+The Software is licensed, not sold. Invisra and its licensors retain all right,
+title, and interest in and to the Software and all copyrights, patents, trade
+secrets, trademarks, and other intellectual property rights in it, including
+all modifications, enhancements, and derivative works, regardless of who
+creates them. Licensee acquires no ownership interest in the Software.
+
+5. CONFIDENTIALITY
+
+The Software, including its source code, architecture, algorithms, models,
+schemas, performance characteristics, and any non-public documentation,
+constitutes the confidential information and trade secrets of Invisra.
+Licensee shall (a) protect it using at least the degree of care it uses for its
+own most sensitive confidential information, and in no event less than
+reasonable care; (b) disclose it only to Authorized Users with a need to know;
+and (c) not disclose it to any other person. These obligations survive
+termination and continue for so long as the information remains a trade secret
+under applicable law, and for confidential information that is not a trade
+secret, for five (5) years after termination. If Licensee is compelled by law
+to disclose, it shall give Invisra prompt written notice and reasonable
+cooperation to seek protective treatment.
+
+6. THIRD-PARTY AND OPEN SOURCE COMPONENTS
+
+The Software may include third-party components, including open source
+software, that are licensed under their own terms. Those terms are set out in
+the NOTICE or THIRD-PARTY-LICENSES file distributed with the Software and
+govern solely those components, and to the extent of a conflict, control over
+this License with respect to those components only. Nothing in those terms
+grants Licensee any right in Invisra's own proprietary materials.
+
+7. FEEDBACK
+
+If Licensee provides suggestions, improvement requests, defect reports, or
+other feedback regarding the Software, Licensee grants Invisra a perpetual,
+irrevocable, worldwide, royalty-free, fully paid, sublicensable license to use,
+reproduce, modify, and exploit such feedback for any purpose without
+attribution or compensation. Licensee shall not provide feedback that is
+subject to third-party rights or license terms that would encumber the
+Software.
+
+8. AUDIT
+
+Upon not less than fifteen (15) days' written notice, and not more than once in
+any twelve (12) month period, Invisra may audit Licensee's use of the Software
+to verify compliance with this License and the Order. Audits shall be conducted
+during normal business hours and in a manner that does not unreasonably
+interfere with Licensee's operations. Licensee shall promptly remedy any
+non-compliance and pay any underpaid fees. If underpayment exceeds five percent
+(5%) of amounts due, Licensee shall also reimburse the reasonable cost of the
+audit.
+
+9. TERM AND TERMINATION
+
+9.1 Term. This License is effective on the earlier of Licensee's first access
+to the Software or the effective date in the Order, and continues for the term
+stated in the Order.
+
+9.2 Termination. Invisra may terminate this License immediately upon written
+notice if Licensee breaches Section 3 (Restrictions) or Section 5
+(Confidentiality), and upon thirty (30) days' written notice for any other
+material breach that remains uncured. Either party may terminate for the other
+party's insolvency, assignment for the benefit of creditors, or comparable
+proceeding.
+
+9.3 Effect. Upon expiration or termination, all rights granted to Licensee
+terminate immediately. Licensee shall cease all use of the Software, delete or
+destroy all copies in its possession or control, including from backups to the
+extent technically practicable, and, upon request, certify such destruction in
+writing signed by an authorized officer.
+
+9.4 Survival. Sections 1, 3, 4, 5, 7, 9.3, 9.4, 10, 11, 12, 13, and 14 survive
+termination.
+
+10. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE," WITH ALL FAULTS AND
+WITHOUT WARRANTY OF ANY KIND. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE
+LAW, INVISRA AND ITS LICENSORS DISCLAIM ALL WARRANTIES, EXPRESS, IMPLIED,
+STATUTORY, OR OTHERWISE, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, NON-INFRINGEMENT, ACCURACY, AND ANY
+WARRANTIES ARISING FROM COURSE OF DEALING OR USAGE OF TRADE. INVISRA DOES NOT
+WARRANT THAT THE SOFTWARE WILL BE UNINTERRUPTED, ERROR-FREE, OR SECURE, OR THAT
+ANY OUTPUT, GEOMETRY, CALCULATION, ANALYSIS, OR RECOMMENDATION PRODUCED BY THE
+SOFTWARE IS ACCURATE, COMPLETE, OR FIT FOR ANY PARTICULAR USE. LICENSEE IS
+SOLELY RESPONSIBLE FOR INDEPENDENTLY VERIFYING ALL OUTPUT BEFORE RELYING ON IT,
+INCLUDING BEFORE ANY MANUFACTURING, FABRICATION, PROCUREMENT, OR SAFETY-
+RELEVANT DECISION.
+
+11. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL INVISRA OR
+ITS LICENSORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL,
+EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR ANY LOST PROFITS, LOST REVENUE, LOST
+DATA, BUSINESS INTERRUPTION, COST OF SUBSTITUTE GOODS, OR COST OF SCRAPPED,
+REWORKED, OR RECALLED PARTS OR PRODUCTS, HOWEVER CAUSED AND UNDER ANY THEORY OF
+LIABILITY, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. INVISRA'S TOTAL
+AGGREGATE LIABILITY ARISING OUT OF OR RELATING TO THIS LICENSE AND THE SOFTWARE
+SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNTS ACTUALLY PAID BY LICENSEE TO
+INVISRA FOR THE SOFTWARE IN THE TWELVE (12) MONTHS IMMEDIATELY PRECEDING THE
+EVENT GIVING RISE TO THE CLAIM, OR (B) ONE HUNDRED U.S. DOLLARS (USD $100).
+THESE LIMITATIONS APPLY NOTWITHSTANDING THE FAILURE OF ESSENTIAL PURPOSE OF ANY
+LIMITED REMEDY. NOTHING IN THIS SECTION LIMITS LIABILITY THAT CANNOT BE LIMITED
+UNDER APPLICABLE LAW, AND THE LIMITATIONS DO NOT APPLY TO LICENSEE'S BREACH OF
+SECTION 3 OR SECTION 5, OR TO LICENSEE'S PAYMENT OBLIGATIONS.
+
+12. EXPORT CONTROL AND SANCTIONS
+
+Licensee shall comply with all applicable export control and sanctions laws,
+including the U.S. Export Administration Regulations and regulations
+administered by the U.S. Office of Foreign Assets Control. Licensee represents
+that it is not located in, organized under the laws of, or ordinarily resident
+in any embargoed or sanctioned jurisdiction, and is not a party identified on
+any restricted-party list. Licensee shall not export, re-export, or transfer
+the Software in violation of such laws.
+
+13. U.S. GOVERNMENT END USERS
+
+The Software is "commercial computer software" and "commercial computer
+software documentation" as those terms are used in FAR 12.212 and DFARS
+227.7202. Any use, duplication, reproduction, release, modification,
+disclosure, or transfer by or on behalf of the U.S. Government is governed
+solely by the terms of this License, and all other terms are inapplicable
+except to the extent required by law.
+
+14. GENERAL
+
+14.1 Governing Law and Venue. This License is governed by the laws of the State
+of Arizona, United States, without regard to its conflict of laws rules. The
+United Nations Convention on Contracts for the International Sale of Goods does
+not apply. The exclusive venue for any dispute arising out of or relating to
+this License is the state courts located in Maricopa County, Arizona, or the
+United States District Court for the District of Arizona, and each party
+irrevocably consents to personal jurisdiction and venue in those courts and
+waives any objection based on forum non conveniens.
+
+14.2 Equitable Relief. Licensee acknowledges that breach of Section 3 or
+Section 5 would cause irreparable harm for which monetary damages are an
+inadequate remedy, and that Invisra is entitled to seek injunctive relief
+without posting bond, in addition to all other remedies.
+
+14.3 Assignment. Licensee may not assign or transfer this License, by operation
+of law, merger, change of control, or otherwise, without Invisra's prior
+written consent. Any attempted assignment in violation of this section is void.
+Invisra may assign this License freely.
+
+14.4 Entire Agreement. This License, together with the Order, is the entire
+agreement between the parties regarding the Software and supersedes all prior
+or contemporaneous understandings. In the event of a conflict, the Order
+controls over this License. Any purchase order or similar document issued by
+Licensee is for administrative convenience only, and its terms have no effect.
+
+14.5 Amendment and Waiver. No amendment or waiver is effective unless in
+writing and signed by an authorized representative of Invisra. Failure to
+enforce any provision is not a waiver of it.
+
+14.6 Severability. If any provision is held unenforceable, it shall be modified
+to the minimum extent necessary to make it enforceable, and the remaining
+provisions remain in full force.
+
+14.7 Notices. Notices to Invisra shall be sent to legal@invisra.ai and to
+Invisra's registered address.
+
+Invisra Labs LLC
+legal@invisra.ai
+https://invisra.ai
