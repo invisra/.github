@@ -18,6 +18,8 @@ The workflow can also verify checked-in API reference documentation, generated o
 
 `api-client-package-ci.yml` provides the common Node/npm and Python package validation pipeline used by dual-package API clients: dependency installation and audit, lint/typecheck/tests, examples, package builds, and installed-artifact smoke tests. Repository-specific paths, package names, install extras, and test commands are supplied as workflow inputs.
 
+Optional `typescript-artifact-smoke-command` and `python-artifact-smoke-command` inputs run after clean installation of the packed npm artifact and Python wheel, respectively. These hooks let each client execute an offline mocked request through the installed package without putting vendor-specific behavior into the shared workflow.
+
 Clients with materially different build systems or monorepo/code-generation requirements should keep their package CI local rather than forcing those differences into the reusable workflow.
 
 ### API observability
