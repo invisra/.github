@@ -112,6 +112,8 @@ jobs:
       - name: Pack and smoke-test npm artifact
         working-directory: ${{ inputs.typescript-directory }}
         shell: bash
+        env:
+          ARTIFACT_SMOKE_COMMAND: ${{ inputs.typescript-artifact-smoke-command }}
         run: |
           tarball="$(npm pack --silent)"
           test -f "$tarball"
@@ -120,8 +122,8 @@ jobs:
           npm init -y >/dev/null
           npm install "$GITHUB_WORKSPACE/${{ inputs.typescript-directory }}/$tarball" >/dev/null
           node --input-type=module -e "await import('${{ inputs.typescript-package }}')"
-          if [[ -n "${{ inputs.typescript-artifact-smoke-command }}" ]]; then
-            eval "${{ inputs.typescript-artifact-smoke-command }}"
+          if [[ -n "$ARTIFACT_SMOKE_COMMAND" ]]; then
+            eval "$ARTIFACT_SMOKE_COMMAND"
           fi
 
       - uses: actions/setup-python@v7
@@ -163,12 +165,14 @@ jobs:
       - name: Smoke-test Python wheel
         working-directory: ${{ inputs.python-directory }}
         shell: bash
+        env:
+          ARTIFACT_SMOKE_COMMAND: ${{ inputs.python-artifact-smoke-command }}
         run: |
           smoke_dir="$(mktemp -d)"
           python -m venv "$smoke_dir/venv"
           "$smoke_dir/venv/bin/pip" install dist/*.whl >/dev/null
           "$smoke_dir/venv/bin/python" -c "from importlib.resources import files; import ${{ inputs.python-import-name }}; assert files('${{ inputs.python-import-name }}').joinpath('py.typed').is_file()"
-          if [[ -n "${{ inputs.python-artifact-smoke-command }}" ]]; then
+          if [[ -n "$ARTIFACT_SMOKE_COMMAND" ]]; then
             export PATH="$smoke_dir/venv/bin:$PATH"
-            eval "${{ inputs.python-artifact-smoke-command }}"
+            eval "$ARTIFACT_SMOKE_COMMAND"
           fi
