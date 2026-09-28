@@ -29,6 +29,11 @@ on:
         description: Command run from the TypeScript package directory
         required: true
         type: string
+      typescript-artifact-smoke-command:
+        description: Optional command run from a clean project after installing the packed npm artifact
+        required: false
+        type: string
+        default: ""
       preflight-command:
         description: Optional repository-root command run before package checks
         required: false
@@ -62,6 +67,11 @@ on:
         description: Python import/package resource name used for wheel smoke validation
         required: true
         type: string
+      python-artifact-smoke-command:
+        description: Optional command run with the clean wheel virtualenv on PATH after installation
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -110,6 +120,9 @@ jobs:
           npm init -y >/dev/null
           npm install "$GITHUB_WORKSPACE/${{ inputs.typescript-directory }}/$tarball" >/dev/null
           node --input-type=module -e "await import('${{ inputs.typescript-package }}')"
+          if [[ -n "${{ inputs.typescript-artifact-smoke-command }}" ]]; then
+            eval "${{ inputs.typescript-artifact-smoke-command }}"
+          fi
 
       - uses: actions/setup-python@v7
         with:
@@ -155,3 +168,7 @@ jobs:
           python -m venv "$smoke_dir/venv"
           "$smoke_dir/venv/bin/pip" install dist/*.whl >/dev/null
           "$smoke_dir/venv/bin/python" -c "from importlib.resources import files; import ${{ inputs.python-import-name }}; assert files('${{ inputs.python-import-name }}').joinpath('py.typed').is_file()"
+          if [[ -n "${{ inputs.python-artifact-smoke-command }}" ]]; then
+            export PATH="$smoke_dir/venv/bin:$PATH"
+            eval "${{ inputs.python-artifact-smoke-command }}"
+          fi
