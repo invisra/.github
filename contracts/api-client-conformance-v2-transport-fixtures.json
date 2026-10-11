@@ -1,9 +1,18 @@
 {
-  "fixtureVersion": 4,
+  "fixtureVersion": 5,
   "conformanceVersion": "2.0",
   "lifecycle": {
-    "phases": ["request", "response", "retry", "error"],
-    "outcomes": ["not-sent", "known", "unknown"]
+    "phases": [
+      "request",
+      "response",
+      "retry",
+      "error"
+    ],
+    "outcomes": [
+      "not-sent",
+      "known",
+      "unknown"
+    ]
   },
   "urlSanitization": {
     "input": "https://example.test/items?apiKey=secret#section",
@@ -35,15 +44,37 @@
   },
   "numericValidation": {
     "timeout": {
-      "valid": [0.001, 1, 30.5],
-      "invalidKinds": ["zero", "negative", "boolean", "nan", "positive-infinity", "negative-infinity"],
+      "valid": [
+        0.001,
+        1,
+        30.5
+      ],
+      "invalidKinds": [
+        "zero",
+        "negative",
+        "boolean",
+        "nan",
+        "positive-infinity",
+        "negative-infinity"
+      ],
       "mustBeFinite": true,
       "mustBePositive": true,
       "mustRejectBoolean": true
     },
     "maxRetries": {
-      "valid": [0, 1, 3],
-      "invalidKinds": ["negative", "boolean", "fractional", "nan", "positive-infinity", "negative-infinity"],
+      "valid": [
+        0,
+        1,
+        3
+      ],
+      "invalidKinds": [
+        "negative",
+        "boolean",
+        "fractional",
+        "nan",
+        "positive-infinity",
+        "negative-infinity"
+      ],
       "mustBeFinite": true,
       "mustBeInteger": true,
       "mustBeNonNegative": true,
@@ -55,8 +86,17 @@
     "retryable": false
   },
   "semanticRetry": {
-    "retryableStatuses": [429, 502, 503, 504],
-    "fallbackSafeMethods": ["GET", "HEAD", "OPTIONS"],
+    "retryableStatuses": [
+      429,
+      502,
+      503,
+      504
+    ],
+    "fallbackSafeMethods": [
+      "GET",
+      "HEAD",
+      "OPTIONS"
+    ],
     "safeOperation": {
       "retryPolicy": "safe",
       "idempotency": "idempotent",
@@ -86,5 +126,23 @@
     "retryable": false,
     "expectedOutcome": "unknown",
     "requiresReconciliation": true
+  },
+  "retryAfter": {
+    "deltaSeconds": {
+      "header": "2.5",
+      "expectedMs": 2500
+    },
+    "negativeSeconds": {
+      "header": "-1",
+      "expectedMs": 0
+    },
+    "pastHttpDate": {
+      "header": "Thu, 01 Jan 1970 00:00:00 GMT",
+      "expectedMs": 0
+    },
+    "invalid": {
+      "header": "not-a-retry-after",
+      "expectedMs": null
+    }
   }
 }
