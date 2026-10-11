@@ -1,5 +1,5 @@
 {
-  "fixtureVersion": 5,
+  "fixtureVersion": 6,
   "conformanceVersion": "2.0",
   "lifecycle": {
     "phases": [
@@ -35,12 +35,14 @@
     "requestId": "req-123",
     "retryable": true,
     "retryAfterMs": 2000,
-    "url": "https://example.test/items"
+    "url": "https://example.test/items",
+    "attempts": 2
   },
   "timeout": {
     "message": "timed out",
     "timeoutMs": 250,
-    "retryable": true
+    "retryable": true,
+    "attempts": 2
   },
   "numericValidation": {
     "timeout": {
@@ -83,7 +85,8 @@
   },
   "cancellation": {
     "message": "cancelled",
-    "retryable": false
+    "retryable": false,
+    "attempts": 1
   },
   "semanticRetry": {
     "retryableStatuses": [
