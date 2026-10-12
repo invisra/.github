@@ -93,3 +93,22 @@ test("capability generator config schema supports slash-spanning IDs and rejects
     assertFailure(validate(cwd, "operation-capabilities-config-v1.schema.json", { ...config, slashSpanningOperationId: ["assets.get"] }), /unexpected property slashSpanningOperationId/);
   });
 });
+
+
+test("contract fixture config schema accepts manifest-backed validation and rejects unknown keys", () => {
+  withTempDir((cwd) => {
+    const config = {
+      schemaVersion: 1,
+      vendor: "fixture-vendor",
+      fixturesDir: "fixtures",
+      manifest: "api-coverage.json",
+      requireOperationId: true,
+      excludedFiles: ["conformance-v2-transport.json"],
+    };
+    assertSuccess(validate(cwd, "api-client-contract-fixtures-v1.schema.json", config));
+    assertFailure(
+      validate(cwd, "api-client-contract-fixtures-v1.schema.json", { ...config, typo: true }),
+      /unexpected property typo/,
+    );
+  });
+});
