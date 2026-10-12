@@ -27,6 +27,11 @@ on:
         required: false
         type: string
         default: ""
+      contract-fixtures-config-path:
+        description: Optional repository-relative contract fixture validation config
+        required: false
+        type: string
+        default: ""
       validator-config-path:
         description: Repository-relative shared-validator config
         required: false
@@ -111,6 +116,17 @@ jobs:
         run: >-
           node .invisra-api-tooling/scripts/validate-api-client-package-metadata.mjs
           --config "${{ inputs.package-metadata-config-path }}"
+      - name: Validate contract fixture config schema
+        if: ${{ inputs.contract-fixtures-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/validate-json-schema.mjs
+          --schema .invisra-api-tooling/contracts/api-client-contract-fixtures-v1.schema.json
+          --instance "${{ inputs.contract-fixtures-config-path }}"
+      - name: Validate contract fixtures
+        if: ${{ inputs.contract-fixtures-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/validate-api-client-contract-fixtures.mjs
+          --config "${{ inputs.contract-fixtures-config-path }}"
       - name: Validate public API surface schema
         if: ${{ inputs.public-api-surface-path != '' }}
         run: >-
