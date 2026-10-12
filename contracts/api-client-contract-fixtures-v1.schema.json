@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://invisra.ai/schemas/api-client-contract-fixtures-v1.schema.json",
+  "title": "Invisra API client contract fixture validation config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "vendor"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "vendor": { "type": "string", "minLength": 1 },
+    "fixturesDir": { "type": "string", "minLength": 1 },
+    "manifest": { "type": "string", "minLength": 1 },
+    "requireOperationId": { "type": "boolean" },
+    "minimumNotesLength": { "type": "integer", "minimum": 1 },
+    "sensitiveHeaderPattern": { "type": "string", "minLength": 1 },
+    "excludedFiles": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  }
+}
