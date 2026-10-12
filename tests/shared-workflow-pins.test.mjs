@@ -35,3 +35,14 @@ test("shared workflows pin external actions to immutable commit SHAs", () => {
 
   assert.deepEqual(violations, []);
 });
+
+
+test("client workflow lint enforces immutable external action refs", () => {
+  const workflow = fs.readFileSync(
+    path.join(repoRoot, ".github", "workflows", "api-client-workflow-lint.yml"),
+    "utf8",
+  );
+
+  assert.match(workflow, /Require immutable external action refs/);
+  assert.match(workflow, /\^\[0-9a-f\]\{40\}\$/);
+});

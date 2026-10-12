@@ -31,3 +31,32 @@ jobs:
       - name: Lint workflows
         shell: bash
         run: ./actionlint
+
+      - name: Require immutable external action refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          failures=0
+
+          while IFS= read -r -d '' file; do
+            while IFS=: read -r line_number target; do
+              target="${target#"${target%%[![:space:]]*}"}"
+              target="${target%%[[:space:]#]*}"
+
+              if [[ "$target" == ./* ]]; then
+                continue
+              fi
+
+              ref="${target##*@}"
+              if [[ "$target" != *@* || ! "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+                echo "$file:$line_number: mutable external action ref: $target" >&2
+                failures=1
+              fi
+            done < <(grep -nE '^[[:space:]]*uses:[[:space:]]+[^#[:space:]]+' "$file" | sed -E 's/^([0-9]+):[[:space:]]*uses:[[:space:]]+/\1:/' || true)
+          done < <(find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) -print0)
+
+          if (( failures != 0 )); then
+            exit 1
+          fi
+
+          echo "All external workflow action refs are pinned to immutable commit SHAs."
