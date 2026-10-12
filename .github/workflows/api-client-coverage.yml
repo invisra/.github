@@ -22,6 +22,11 @@ on:
         required: false
         type: string
         default: ""
+      package-metadata-config-path:
+        description: Optional repository-relative package metadata validation config
+        required: false
+        type: string
+        default: ""
       validator-config-path:
         description: Repository-relative shared-validator config
         required: false
@@ -95,6 +100,17 @@ jobs:
       - name: Validate shared tooling pins
         if: ${{ inputs.tooling-pins-path != '' }}
         run: node .invisra-api-tooling/scripts/validate-api-client-tooling-pins.mjs --config "${{ inputs.tooling-pins-path }}"
+      - name: Validate package metadata config schema
+        if: ${{ inputs.package-metadata-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/validate-json-schema.mjs
+          --schema .invisra-api-tooling/contracts/api-client-package-metadata-v1.schema.json
+          --instance "${{ inputs.package-metadata-config-path }}"
+      - name: Validate package metadata
+        if: ${{ inputs.package-metadata-config-path != '' }}
+        run: >-
+          node .invisra-api-tooling/scripts/validate-api-client-package-metadata.mjs
+          --config "${{ inputs.package-metadata-config-path }}"
       - name: Validate public API surface schema
         if: ${{ inputs.public-api-surface-path != '' }}
         run: >-
