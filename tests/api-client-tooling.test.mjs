@@ -10,6 +10,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 const scripts = {
   publicSurface: path.join(repoRoot, "scripts/validate-api-client-public-surface.mjs"),
   toolingPins: path.join(repoRoot, "scripts/validate-api-client-tooling-pins.mjs"),
+  contractFixtures: path.join(repoRoot, "scripts/validate-api-client-contract-fixtures.mjs"),
   coverage: path.join(repoRoot, "scripts/validate-api-client-coverage.mjs"),
   capabilities: path.join(repoRoot, "scripts/generate-api-client-operation-capabilities.mjs"),
 };
@@ -177,6 +178,104 @@ test("tooling pin validator rejects malformed SHAs and missing files", () => {
     );
   });
 });
+
+
+
+test("contract fixture validator accepts shared provenance and manifest-backed operations", () => {
+  withTempDir((cwd) => {
+    writeJson(cwd, "api-coverage.json", {
+      schemaVersion: 2,
+      operations: [baseOperation({ id: "parts.search", operation: "search", path: "/parts/search" })],
+    });
+    writeJson(cwd, "fixtures/search-contract.json", {
+      fixtureVersion: 1,
+      vendor: "fixture-vendor",
+      operationId: "parts.search",
+      endpoint: "parts-search",
+      provenance: {
+        source: "synthetic",
+        recorded: false,
+        sanitized: true,
+        notes: "Representative synthetic search response shapes.",
+      },
+      cases: {
+        success: {
+          status: 200,
+          headers: { "x-request-id": "fixture-1" },
+          body: { results: [] },
+        },
+      },
+    });
+    writeJson(cwd, "contract-fixtures.config.json", {
+      schemaVersion: 1,
+      vendor: "fixture-vendor",
+      manifest: "api-coverage.json",
+      requireOperationId: true,
+    });
+
+    assertSuccess(
+      runScript(scripts.contractFixtures, cwd, ["--config", "contract-fixtures.config.json"]),
+    );
+  });
+});
+
+test("contract fixture validator rejects sensitive headers and inferred operations", () => {
+  withTempDir((cwd) => {
+    writeJson(cwd, "api-coverage.json", {
+      schemaVersion: 2,
+      operations: [
+        baseOperation({
+          id: "parts.search",
+          operation: "search",
+          path: "/parts/search",
+          confidence: "inferred-contract",
+          experimental: true,
+        }),
+      ],
+    });
+    writeJson(cwd, "fixtures/search-contract.json", {
+      fixtureVersion: 1,
+      vendor: "fixture-vendor",
+      operationId: "parts.search",
+      endpoint: "parts-search",
+      provenance: {
+        source: "recorded",
+        recorded: true,
+        sanitized: true,
+        notes: "Sanitized recorded response used for compatibility testing.",
+      },
+      cases: {
+        success: {
+          status: 200,
+          headers: { authorization: "secret" },
+          body: {},
+        },
+      },
+    });
+    writeJson(cwd, "contract-fixtures.config.json", {
+      schemaVersion: 1,
+      vendor: "fixture-vendor",
+      manifest: "api-coverage.json",
+      requireOperationId: true,
+    });
+
+    assertFailure(
+      runScript(scripts.contractFixtures, cwd, ["--config", "contract-fixtures.config.json"]),
+      /experimental\/inferred operation/,
+    );
+
+    const manifest = JSON.parse(fs.readFileSync(path.join(cwd, "api-coverage.json"), "utf8"));
+    manifest.operations[0].confidence = "official-public";
+    manifest.operations[0].experimental = false;
+    writeJson(cwd, "api-coverage.json", manifest);
+
+    assertFailure(
+      runScript(scripts.contractFixtures, cwd, ["--config", "contract-fixtures.config.json"]),
+      /sensitive authentication\/session headers/,
+    );
+  });
+});
+
 
 test("coverage validator accepts canonical Conformance v2 manifests", () => {
   withTempDir((cwd) => {
