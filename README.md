@@ -22,6 +22,10 @@ Optional `typescript-artifact-smoke-command` and `python-artifact-smoke-command`
 
 Clients with materially different build systems or monorepo/code-generation requirements should keep their package CI local rather than forcing those differences into the reusable workflow.
 
+### Contract fixtures
+
+`validate-api-client-contract-fixtures.mjs` provides shared validation for repository-owned compatibility fixtures. A small JSON config identifies the vendor, fixture directory, optional API coverage manifest, and whether fixtures must name a verified operation. The validator enforces provenance metadata, sanitization for recorded responses, lowercase string headers, sensitive-header rejection, valid HTTP statuses, and non-empty response cases. When an operation ID is present and a manifest is configured, fixtures cannot target unknown, experimental, or inferred-contract operations.
+
 ### API observability
 
 `api-client-observability.yml` validates operation semantics and generated capability metadata against the versioned contract in `contracts/api-client-observability-v1.json`.
